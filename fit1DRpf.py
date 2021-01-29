@@ -72,7 +72,6 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     errdown.SetLineColor(r.kBlue)
     errup.Draw("lsame")
     errdown.Draw("lsame")
-    err3down.Draw("lsame")
     c.SaveAs(outputFile.replace(".root",".png"))
 
 
@@ -189,13 +188,13 @@ def applyFuncToTT(inputFile,fitFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60
     output.Close()
 
 #SR
-get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRT.root","VRT","VRF")
+# get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRT.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRL.root","VRL","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2017/QCD.root","templates/WP_0.8_0.9/2017/QCD1DRpf_VRT.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2017/QCD.root","templates/WP_0.8_0.9/2017/QCD1DRpf_VRL.root","VRL","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2018/QCD.root","templates/WP_0.8_0.9/2018/QCD1DRpf_VRT.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2018/QCD.root","templates/WP_0.8_0.9/2018/QCD1DRpf_VRL.root","VRL","VRF")
-# get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_VRT.root","VRT","VRF")
+get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_VRT_increasedUnc.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_VRL.root","VRL","VRF")
 
 
