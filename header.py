@@ -1015,7 +1015,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 latex.SetTextFont(42)
                 latex.SetTextAlign(31) 
                 latex.SetTextSize(0.7*0.1)
-                latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,"137 fb^{-1} (13 TeV)")
+                #latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,"137 fb^{-1} (13 TeV)")
 
     # CMS_lumi.CMS_lumi(myCan, year, 11)
 

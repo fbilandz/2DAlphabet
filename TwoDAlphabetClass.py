@@ -1784,7 +1784,7 @@ class TwoDAlphabet:
                     else:
                         thisVal = '-'
 
-                    syst_lines[syst_line_key] += (thisVal+' ')
+                    syst_lines[syst_line_key] += (str(thisVal)+' ')
 
         card_new.write(header.colliMate(bin_line+'\n',column_width))
         card_new.write(header.colliMate(processName_line+'\n',column_width))
