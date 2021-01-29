@@ -61,8 +61,6 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     fitfun = hRatio1D.GetFunction('QuadraticFit')
     errup = q.ErrUp
     errdown = q.ErrDn
-    err3Down = fitfun - 3*(fitfun-errdown)
-
     c = ROOT.TCanvas('rpf_TT_fitted', 'c', 800, 600)
     c.cd()
     hRatio1D.Draw('e1')
@@ -191,7 +189,7 @@ def applyFuncToTT(inputFile,fitFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60
     output.Close()
 
 #SR
-# get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRT.root","VRT","VRF")
+get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRT.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2016/QCD.root","templates/WP_0.8_0.9/2016/QCD1DRpf_VRL.root","VRL","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2017/QCD.root","templates/WP_0.8_0.9/2017/QCD1DRpf_VRT.root","VRT","VRF")
 # get1DRpf("templates/WP_0.8_0.9/2017/QCD.root","templates/WP_0.8_0.9/2017/QCD1DRpf_VRL.root","VRL","VRF")
