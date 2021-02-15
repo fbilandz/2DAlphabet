@@ -2,14 +2,26 @@ import sys, os
 import subprocess
 import header
 
-def SystematicParser(cardname):
+def SystematicParser(cardname,year):
     systs = []
     f = open(cardname,'r')
+    dropSys = ["jer","jes","jmr","jms"]#These are renamed to jes16/17/18...
+    renamedSys = {"trig":"muonTrig","iso":"muonIso","id":"muonID","sf":"ak4SF"}
     for l in f.readlines():
+        #if 'lnN' in l or 'shape' in l or 'rpf' in l: don't want rpf
         if 'lnN' in l or 'shape' in l:
             syst_name = l.split(' ')[0]
+            if(syst_name in dropSys):
+                continue
+            if(syst_name in renamedSys.keys()):
+                if(year=="RunII"):
+                    systs.append(renamedSys[syst_name]+"16")
+                    systs.append(renamedSys[syst_name]+"17")
+                    systs.append(renamedSys[syst_name]+"18")
+                else:
+                    systs.append(renamedSys[syst_name]+year)
+                continue
             if syst_name != 'shapes': systs.append(syst_name.rstrip())
-
     return systs
 
 from optparse import OptionParser
@@ -23,6 +35,12 @@ parser.add_option("--condor",
 parser.add_option("-p", "--post",
                   action="store_true", dest="post", default=False,
                   help="Run the post processing to get impact plot")
+parser.add_option("-c", "--cardName",
+                  action="store", dest="cardName", default="combinedCard.txt",
+                  help="Name of the datacard")
+parser.add_option("-y", "--year",
+                  action="store", dest="year", default="combinedCard.txt",
+                  help="16,17,18,RunII")
 # parser.add_option("-s", "--storage",
 #                   dest="storage", default='T3_US_FNALLPC',
 #                   help="Crab3 storage site (config.Site.storageSite)")
@@ -53,7 +71,9 @@ if options.condor:
     header.executeCmd('mv tarball.tgz '+projDir)
 print 'cd '+projDir
 with header.cd(projDir):
-    systs = SystematicParser('card_'+card_tag+'.txt')
+    cardName = str(options.cardName)
+    print("Parsing " + cardName)
+    systs = SystematicParser(cardName,options.year)
     impactNuisanceString = '--named '
     for s in systs:
         impactNuisanceString+=s+','
@@ -63,11 +83,12 @@ with header.cd(projDir):
         # Remove old runs if they exist
         header.executeCmd('rm *_paramFit_*.root *_initialFit_*.root')
         # Build a post-fit workspace
-        #header.executeCmd('text2workspace.py -b card_'+card_tag+'.txt -o impactworkspace.root')
+        #header.executeCmd('text2workspace.py -b '+cardName+' -o impactworkspace.root')
         header.setSnapshot()
-        initialfit_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit --doInitialFit --robustFit 1 -m 2000 --freezeParameters "var{Fail_.*}" '+impactNuisanceString
+        initialfit_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -15 --rMax 15 -d initialFitWorkspace.root --snapshotName initialFit --doInitialFit --cminDefaultMinimizerStrategy 0 -m 2000 '+impactNuisanceString
+        print(initialfit_cmd)
         header.executeCmd(initialfit_cmd)
-        impact_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit --doFits --robustFit 1 -m 2000 --freezeParameters "var{Fail_.*}" '+impactNuisanceString
+        impact_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -15 --rMax 15 -d initialFitWorkspace.root --snapshotName initialFit --doFits --cminDefaultMinimizerStrategy 0 -m 2000 '+impactNuisanceString
         if options.condor:
             JOB_PREFIX = """#!/bin/bash
 source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -92,10 +113,13 @@ cd %s
 
             impact_cmd = impact_cmd+' --job-mode condor --dry-run --prefix-file impact_prefix.txt --sub-opts "transfer_input_files = tarball.tgz" --task-name Impacts'+taskName
         else:
+            print(impact_cmd)
             header.executeCmd(impact_cmd)
 
     elif options.post:
         # Grab the output
+        print('combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit -m 2000 '+impactNuisanceString+' -o impacts.json')
+        print('plotImpacts.py -i impacts.json -o impacts')
         header.executeCmd('combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit -m 2000 '+impactNuisanceString+' -o impacts.json')
         header.executeCmd('plotImpacts.py -i impacts.json -o impacts')
 

@@ -36,13 +36,14 @@ def setSnapshot(d=''):
     fout.Close()
 
 # Function stolen from https://stackoverflow.com/questions/9590382/forcing-python-json-module-to-work-with-ascii
-def openJSON(f):
+def openJSON(f,twoDconfig=True):
     with open(f) as fInput_config:
         input_config = json.load(fInput_config, object_hook=ascii_encode_dict)  # Converts most of the unicode to ascii
 
-        for process in [proc for proc in input_config['PROCESS'].keys() if proc != 'HELP']:
-            for index,item in enumerate(input_config['PROCESS'][process]['SYSTEMATICS']):           # There's one list that also
-                input_config['PROCESS'][process]['SYSTEMATICS'][index] = item.encode('ascii')  
+        if twoDconfig:
+            for process in [proc for proc in input_config['PROCESS'].keys() if proc != 'HELP']:
+                for index,item in enumerate(input_config['PROCESS'][process]['SYSTEMATICS']):           # There's one list that also
+                    input_config['PROCESS'][process]['SYSTEMATICS'][index] = item.encode('ascii')  
 
     return input_config
 
@@ -82,11 +83,22 @@ def copyHistWithNewXbins(thisHist,newXbins,copyName):
 
             # print '\t New bin x: ' + str(newBinX) + ', ' + str(newBinXlow) + ', ' + str(newBinXhigh)
             for old_xbin in range(1,thisHist.GetNbinsX()+1):
-                if thisHist.GetXaxis().GetBinLowEdge(old_xbin) >= new_bin_min and thisHist.GetXaxis().GetBinUpEdge(old_xbin) <= new_bin_max:
-                    # print '\t \t Old bin x: ' + str(oldBinX) + ', ' + str(thisHist.GetXaxis().GetBinLowEdge(oldBinX)) + ', ' + str(thisHist.GetXaxis().GetBinUpEdge(oldBinX))
-                    # print '\t \t Adding content ' + str(thisHist.GetBinContent(oldBinX,binY))
-                    new_bin_content += thisHist.GetBinContent(old_xbin,ybin)
-                    new_bin_errorsq += thisHist.GetBinError(old_xbin,ybin)**2
+                old_bin_min = thisHist.GetXaxis().GetBinLowEdge(old_xbin)
+                old_bin_max = thisHist.GetXaxis().GetBinUpEdge(old_xbin)
+                if old_bin_min >= new_bin_max:
+                    break
+                elif old_bin_min >= new_bin_min and old_bin_min < new_bin_max:
+                    if old_bin_max <= new_bin_max:
+                        new_bin_content += thisHist.GetBinContent(old_xbin,ybin)
+                        new_bin_errorsq += thisHist.GetBinError(old_xbin,ybin)**2
+                    elif old_bin_max > new_bin_max:
+                        raise ValueError(
+                            '''The requested X rebinning does not align bin edges with the input bin edge.
+                            Cannot split input bin [%s,%s] with output bin [%s,%s]'''%(old_bin_min,old_bin_max,new_bin_min,new_bin_max))
+                elif old_bin_min <= new_bin_min and old_bin_max > new_bin_min:
+                    raise ValueError(
+                        '''The requested Y rebinning does not align bin edges with the input bin edge.
+                        Cannot split input bin [%s,%s] with output bin [%s,%s]'''%(old_bin_min,old_bin_max,new_bin_min,new_bin_max))
 
             # print '\t Setting content ' + str(newBinContent) + '+/-' + str(sqrt(newBinErrorSq))
             if new_bin_content > 0:
@@ -131,11 +143,22 @@ def copyHistWithNewYbins(thisHist,newYbins,copyName):
 
             # print '\t New bin x: ' + str(newBinX) + ', ' + str(newBinXlow) + ', ' + str(newBinXhigh)
             for old_ybin in range(1,thisHist.GetNbinsY()+1):
-                if thisHist.GetYaxis().GetBinLowEdge(old_ybin) >= new_bin_min and thisHist.GetYaxis().GetBinUpEdge(old_ybin) <= new_bin_max:
-                    # print '\t \t Old bin x: ' + str(oldBinX) + ', ' + str(thisHist.GetXaxis().GetBinLowEdge(oldBinX)) + ', ' + str(thisHist.GetXaxis().GetBinUpEdge(oldBinX))
-                    # print '\t \t Adding content ' + str(thisHist.GetBinContent(oldBinX,binY))
-                    new_bin_content += thisHist.GetBinContent(xbin,old_ybin)
-                    new_bin_errorsq += thisHist.GetBinError(xbin,old_ybin)**2
+                old_bin_min = thisHist.GetYaxis().GetBinLowEdge(old_ybin)
+                old_bin_max = thisHist.GetYaxis().GetBinUpEdge(old_ybin)
+                if old_bin_min >= new_bin_max:
+                    break
+                elif old_bin_min >= new_bin_min and old_bin_min < new_bin_max:
+                    if old_bin_max <= new_bin_max:
+                        new_bin_content += thisHist.GetBinContent(xbin,old_ybin)
+                        new_bin_errorsq += thisHist.GetBinError(xbin,old_ybin)**2
+                    elif old_bin_max > new_bin_max:
+                        raise ValueError(
+                            '''The requested Y rebinning does not align bin edges with the input bin edge.
+                            Cannot split input bin [%s,%s] with output bin [%s,%s]'''%(old_bin_min,old_bin_max,new_bin_min,new_bin_max))
+                elif old_bin_min <= new_bin_min and old_bin_max > new_bin_min:
+                    raise ValueError(
+                        '''The requested Y rebinning does not align bin edges with the input bin edge.
+                        Cannot split input bin [%s,%s] with output bin [%s,%s]'''%(old_bin_min,old_bin_max,new_bin_min,new_bin_max))
 
             # print '\t Setting content ' + str(newBinContent) + '+/-' + str(sqrt(newBinErrorSq))
             if new_bin_content > 0:
@@ -147,6 +170,32 @@ def copyHistWithNewYbins(thisHist,newYbins,copyName):
     hist_copy.SetTitle(copyName)
 
     return hist_copy
+
+def ConvertToEvtsPerUnit(hist,width=None):
+    if width == None:
+        use_width = GetMinWidth(hist)
+    else:
+        use_width = width
+
+    converted = hist.Clone()
+    for ibin in range(1,hist.GetNbinsX()+1):
+        if hist.GetBinWidth(ibin) == use_width:
+            continue
+        else:
+            factor = use_width/hist.GetBinWidth(ibin)
+            new_content = factor * converted.GetBinContent(ibin)
+            new_error = factor * converted.GetBinError(ibin)
+            converted.SetBinContent(ibin,new_content)
+            converted.SetBinError(ibin,new_error)
+    
+    return converted
+
+def GetMinWidth(hist):
+    use_width = 10**6
+    for ibin in range(1,hist.GetNbinsX()+1):
+        if hist.GetBinWidth(ibin) < use_width:
+            use_width = hist.GetBinWidth(ibin)
+    return int(use_width)
 
 def smoothHist2D(name,histToSmooth,renormalize=False,iterate=1,skipEdges=False):
     print "Smoothing "+name
@@ -697,14 +746,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
     logString = ''
     tot_sigs = []
 
-    # bstar_name_match = {
-    #     'ttbar':'t#bar{t} hadronic',
-    #     'ttbar-semilep':'t#bar{t} semi-leptonic',
-    #     'singletop_tW':'single top tW',
-    #     'singletop_tWB':'single top #bar{t}W',
-    #     'qcd':'Multijet'
-    # }
-
     # For each hist/data distribution
     for hist_index, hist in enumerate(histlist):
         # Grab the pad we want to draw in
@@ -740,8 +781,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
             if 'lego' in datastyle.lower(): hist.GetZaxis().SetTitleOffset(1.4)
             if len(titles) > 0:
                 hist.SetTitle(titles[hist_index])
-            # Bstar specific
-            # hist.SetTitle('')
 
             if datastyle != 'pe': hist.Draw(datastyle)
             else: hist.Draw('colz')
@@ -770,13 +809,9 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
             # If there are no backgrounds, only plot the data (semilog if desired)
             if len(bkglist) == 0:
                 hist.SetMaximum(1.13*hist.GetMaximum())
-                # hist.GetXaxis().SetTitle(xtitle)
-                # hist.GetYaxis().SetTitle(ytitle)
                 if len(titles) > 0:
                     hist.SetTitle(titles[hist_index])
                 hist.SetTitleOffset(1.1)
-                # Bstar specific
-                # hist.SetTitle('')
                 hist.Draw(datastyle)
                 CMS_lumi.CMS_lumi(thisPad, year, 11)
             
@@ -896,12 +931,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 data_leg_title = hist.GetTitle()
                 if len(titles) > 0:
                     hist.SetTitle(titles[hist_index])
-                # Bstar specific
-                # hist.SetTitle('')
-                # if ('projx' not in name) and :
-                #     hist.GetYaxis().SetTitle('Events / bin')
-                # else:
-                #     hist.GetYaxis().SetTitle('Events / 20 GeV')
                 hist.SetTitleOffset(1.15,"xy")
                 hist.GetYaxis().SetTitleOffset(1.04)
                 hist.GetYaxis().SetLabelSize(0.07)
@@ -984,7 +1013,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
 
                 LS = .16
 
-                pulls[hist_index].GetYaxis().SetRangeUser(-2.9,2.9)
+                pulls[hist_index].GetYaxis().SetRangeUser(-3.9,3.9)
                 pulls[hist_index].GetYaxis().SetTitleOffset(0.4)
                 # pulls[hist_index].GetXaxis().SetTitleOffset(0.9)
                              
@@ -1015,9 +1044,17 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 latex.SetTextFont(42)
                 latex.SetTextAlign(31) 
                 latex.SetTextSize(0.7*0.1)
-                #latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,"137 fb^{-1} (13 TeV)")
-
-    # CMS_lumi.CMS_lumi(myCan, year, 11)
+                if(year==2):
+                    lumi = "137 fb^{-1}"
+                elif(year==16):
+                    lumi = "35.9 fb^{-1}"
+                elif(year==17):
+                    lumi = "41.5 fb^{-1}"
+                elif(year==18):
+                    lumi = "59.8 fb^{-1}"
+                else:
+                    lumi = ""
+                latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,lumi)
 
     if rootfile:
         myCan.Print(tag+'/'+name+'.root','root')
@@ -1067,10 +1104,6 @@ def ColorCodeSortedIndices(colors):
         if c not in possible_colors:
             possible_colors.append(c)
 
-    # BSTAR SPECIFIC
-    if 861 in possible_colors and 2 in possible_colors:
-        possible_colors[possible_colors.index(861)], possible_colors[possible_colors.index(2)] = possible_colors[possible_colors.index(2)], possible_colors[possible_colors.index(861)] 
-    
     new_color_order = []
     for c in possible_colors:
         for idx in [idx for idx,color in enumerate(colors) if color == c]:

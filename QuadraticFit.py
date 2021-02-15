@@ -15,7 +15,7 @@ class QuadraticFit:
     self.fit.SetParameter(1, init_var[0])
     self.fit.SetParameter(2, init_var[0])
   def Converter(self, fitter):
-    self.ErrUp = TF1("QuadrarticFitErrorUp"+self.name, "[0]+ [1]*x + [2]*x*x + 4.0*sqrt(([3]*[3]) + (2*x*[6]) + (x*x*[4]*[4]) + (2*x*x*[7]) + (2*x*x*x*[8]) + (x*x*x*x*[5]*[5]))",self.rm,self.rp)
+    self.ErrUp = TF1("QuadrarticFitErrorUp"+self.name, "[0]+ [1]*x + [2]*x*x + sqrt(([3]*[3]) + (2*x*[6]) + (x*x*[4]*[4]) + (2*x*x*[7]) + (2*x*x*x*[8]) + (x*x*x*x*[5]*[5]))",self.rm,self.rp)
     self.ErrUp.SetParameter(0, self.fit.GetParameter(0))
     self.ErrUp.SetParameter(1, self.fit.GetParameter(1))
     self.ErrUp.SetParameter(2, self.fit.GetParameter(2))
@@ -25,7 +25,7 @@ class QuadraticFit:
     self.ErrUp.SetParameter(6, fitter.CovMatrix(0,1))
     self.ErrUp.SetParameter(7, fitter.CovMatrix(0,2))
     self.ErrUp.SetParameter(8, fitter.CovMatrix(1,2))
-    self.ErrDn = TF1("QuadrarticFitErrorDn"+self.name, "[0]+ [1]*x + [2]*x*x - 2*sqrt(([3]*[3]) + (2*x*[6]) + (x*x*[4]*[4]) + (2*x*x*[7]) + (2*x*x*x*[8]) + (x*x*x*x*[5]*[5]))",self.rm,self.rp)
+    self.ErrDn = TF1("QuadrarticFitErrorDn"+self.name, "[0]+ [1]*x + [2]*x*x - sqrt(([3]*[3]) + (2*x*[6]) + (x*x*[4]*[4]) + (2*x*x*[7]) + (2*x*x*x*[8]) + (x*x*x*x*[5]*[5]))",self.rm,self.rp)
     self.ErrDn.SetParameter(0, self.fit.GetParameter(0))
     self.ErrDn.SetParameter(1, self.fit.GetParameter(1))
     self.ErrDn.SetParameter(2, self.fit.GetParameter(2))

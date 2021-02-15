@@ -66,7 +66,7 @@ for i,c in enumerate(inputConfigsAndArgs):
 print 'Setting on-fly parameters:'
 print '\ttag\t\t = '+options.quicktag
 print '\trecycleAll\t = '+str(options.recycleAll)
-# print '\trecycle\t\t = '+str(options.recycle)
+print '\trecycle\t\t = '+str(options.recycle)
 print '\tskipFit\t\t = '+str(options.skipFit)
 print 'Remaining arguments:'
 for i in inputConfigs:
@@ -142,14 +142,18 @@ if not options.skipPlots:
         runIIs = {}
         for cat in tags:
             for t in twoDinstances:
-                if cat in t.name and '17' in t.name:
+                print(t.name.replace("_",""))
+                if cat in t.name.replace("_","") and '17' in t.name:
                     runIIs[cat] = t
                     break
+
+        print(tags)
+        print(runIIs)
 
         for cat in runIIs.keys():
             runII = runIIs[cat]
             runII.name = cat+'RunII'
-            runII.year = 1
+            runII.year = 2
             runII.projPath = runII._projPath()
             runII.plotFitResults('RunII_b')
             runII.plotFitResults('RunII_s')
