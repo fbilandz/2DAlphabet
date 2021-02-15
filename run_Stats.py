@@ -143,7 +143,8 @@ with header.cd(projDir):
     # Make a prefit workspace from the data card
     if options.workspace == '' and not options.post:
         workspace_name = 'stats_workspace.root'
-        t2w_cmd = 'text2workspace.py --channel-masks -b card_'+card_tag+'.txt -o '+workspace_name
+        #t2w_cmd = 'text2workspace.py --channel-masks -b card_'+card_tag+'.txt -o '+workspace_name
+        t2w_cmd = 'text2workspace.py --channel-masks -b combinedCard.txt'+' -o '+workspace_name
         # if not (os.path.exists(workspace_name)):# and options.ftest == 'pvalue'):
         header.executeCmd(t2w_cmd,options.dryrun)
     else:
