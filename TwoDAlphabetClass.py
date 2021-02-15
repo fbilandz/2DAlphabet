@@ -93,10 +93,12 @@ class TwoDAlphabet:
         # Determine whether we need rpfRatio templates
         if self.rpfRatio != False:
             if 'SYSTEMATICS' in self.inputConfig['OPTIONS']['rpfRatio'].keys() and len(self.inputConfig['OPTIONS']['rpfRatio']['SYSTEMATICS']) > 0:
-                if len(self.inputConfig['OPTIONS']['rpfRatio']['SYSTEMATICS']) == 1 and self.inputConfig['OPTIONS']['rpfRatio']['SYSTEMATICS'][0] == 'KDEbandwidth':
+                if len(self.inputConfig['OPTIONS']['rpfRatio']['SYSTEMATICS']) == 1:
+                    self.rpfVarName = self.inputConfig['OPTIONS']['rpfRatio']['SYSTEMATICS'][0]
+                    print("Rpf variation name: "+self.rpfVarName)
                     self.rpfRatioVariations = ['up','down']
                 else:
-                    raise ValueError('Only "KDEbandwidth" is accepted as a systematic uncertainty for the qcd mc Rpf ratio.')
+                    raise ValueError('Only MC Rpf unc is accepted as a systematic uncertainty for the qcd mc Rpf ratio.')
             else:
                 self.rpfRatioVariations = False
         else:
@@ -377,14 +379,12 @@ class TwoDAlphabet:
 
         # Finally, we need to get the bin normalizations correct. So we look at one of the
         # input histograms to get the bin widths and use that as the base to normalize the 
-        # rebinning to.
 
         temp_input_file = TFile.Open(self.inputConfig['PROCESS']['data_obs']['FILE'])
         temp_input_hist = temp_input_file.Get(self.inputConfig['PROCESS']['data_obs']['HISTFAIL'])
         oldXwidth = (temp_input_hist.GetXaxis().GetXmax() - temp_input_hist.GetXaxis().GetXmin())/temp_input_hist.GetNbinsX()
         oldYwidth = (temp_input_hist.GetYaxis().GetXmax() - temp_input_hist.GetYaxis().GetXmin())/temp_input_hist.GetNbinsY()
         temp_input_file.Close()
-
         for v in ['X','Y']:
             # ONE CATEGORY - VARIABLE
             if 'BINS' in binDict[v].keys():
@@ -517,7 +517,16 @@ class TwoDAlphabet:
         elif optionName == 'verbosity':
             option_return = 0
         elif optionName == 'year':
-            option_return = 1
+            if("16" in self.name):
+                option_return = 16
+            elif("17" in self.name):
+                option_return = 17
+            elif("18" in self.name):
+                option_return = 18
+            elif("RunII" in self.name):
+                option_return = 2
+            else:
+                option_return = 1
         else:
             if optionName == 'recycle':
                 print 'WARNING: '+optionName+' boolean not set explicitly. Default to [].'
@@ -1396,8 +1405,8 @@ class TwoDAlphabet:
         # Determine whether we need rpfRatio templates
         if self.rpfRatio != False and self.rpfRatioVariations != False:
             for v in self.rpfRatioVariations:
-                TH2_qcdmc_fail = self.orgFile.Get(self.organizedDict['qcdmc']['fail_FULL']['KDEbandwidth'+v.capitalize()])
-                TH2_qcdmc_pass = self.orgFile.Get(self.organizedDict['qcdmc']['pass_FULL']['KDEbandwidth'+v.capitalize()])
+                TH2_qcdmc_fail = self.orgFile.Get(self.organizedDict['qcdmc']['fail_FULL'][self.rpfVarName+v.capitalize()])
+                TH2_qcdmc_pass = self.orgFile.Get(self.organizedDict['qcdmc']['pass_FULL'][self.rpfVarName+v.capitalize()])
 
                 TH2_qcdmc_ratios['FULL_'+v] = TH2_qcdmc_pass.Clone('qcdmc_rpf_full_'+v)
                 TH2_qcdmc_ratios['FULL_'+v].Divide(TH2_qcdmc_fail)
@@ -1436,11 +1445,11 @@ class TwoDAlphabet:
                                 self.allVars.append(mc_ratio_var)
 
                     Roo_dict['qcd']['pass_'+c+'_'+v] = {}
-                    Roo_dict['qcd']['pass_'+c+'_'+v]['RPH2D'] = RooParametricHist2D('qcd_pass_'+c+'_'+self.name+'_KDEbandwidth'+v.capitalize(),
-                                                                                    'qcd_pass_'+c+'_'+self.name+'_KDEbandwidth'+v.capitalize(),
+                    Roo_dict['qcd']['pass_'+c+'_'+v]['RPH2D'] = RooParametricHist2D('qcd_pass_'+c+'_'+self.name+'_'+self.rpfVarName+v.capitalize(),
+                                                                                    'qcd_pass_'+c+'_'+self.name+'_'+self.rpfVarName+v.capitalize(),
                                                                                     x_vars[c], y_var, bin_list_pass, TH2_qcdmc_ratios[c+'_'+v])
-                    Roo_dict['qcd']['pass_'+c+'_'+v]['norm']  = RooAddition('qcd_pass_'+c+'_'+self.name+'_KDEbandwidth'+v.capitalize()+'_norm',
-                                                                            'qcd_pass_'+c+'_'+self.name+'_KDEbandwidth'+v.capitalize()+'_norm',
+                    Roo_dict['qcd']['pass_'+c+'_'+v]['norm']  = RooAddition('qcd_pass_'+c+'_'+self.name+'_'+self.rpfVarName+v.capitalize()+'_norm',
+                                                                            'qcd_pass_'+c+'_'+self.name+'_'+self.rpfVarName+v.capitalize()+'_norm',
                                                                             bin_list_pass)
 
         print "Making workspace..."
@@ -1481,7 +1490,7 @@ class TwoDAlphabet:
         jmax = str(len([proc for proc in self.inputConfig['PROCESS'].keys() if proc != 'HELP' and self.inputConfig['PROCESS'][proc]['CODE'] == 2]) + 1)
         # Get the length of the lsit of all systematics (and ignore "HELP" key)
         n_uncorr_systs = len([syst for syst in self.inputConfig['SYSTEMATIC'].keys() if syst != 'HELP' and 'UNCORRELATED' in self.inputConfig['SYSTEMATIC'][syst] and self.inputConfig['SYSTEMATIC'][syst]['UNCORRELATED']])
-        kmax = str(len([syst for syst in self.inputConfig['SYSTEMATIC'].keys() if syst != 'HELP' and syst != 'KDEbandwidth'])+n_uncorr_systs)
+        kmax = str(len([syst for syst in self.inputConfig['SYSTEMATIC'].keys() if syst != 'HELP' and syst != self.rpfVarName])+n_uncorr_systs)
         if self.rpfRatioVariations != False: kmax = str(int(kmax)+1)
 
         card_new.write('imax '+imax+'\n')      
@@ -1546,14 +1555,13 @@ class TwoDAlphabet:
             if 'UNCORRELATED' in self.inputConfig['SYSTEMATIC'][syst].keys() and self.inputConfig['SYSTEMATIC'][syst]['UNCORRELATED']:
                 syst_lines[syst+'_pass'] = syst + '_pass ' + syst_type + ' '
                 syst_lines[syst+'_fail'] = syst + '_fail ' + syst_type + ' '
-            elif syst == 'KDEbandwidth':
+            elif syst == self.rpfVarName:
                 continue
             else:
                 syst_lines[syst] = syst + ' ' + syst_type + ' '
 
         if self.rpfRatioVariations != False:
-            syst_lines['KDEbandwidth'] = 'KDEbandwidth shape '
-
+            syst_lines[self.rpfVarName] = self.rpfVarName+' shape '
         signal_procs = [proc for proc in self.inputConfig['PROCESS'].keys() if proc != 'HELP' and proc != 'data_obs' and self.inputConfig['PROCESS'][proc]['CODE'] == 0]
         MC_bkg_procs = [proc for proc in self.inputConfig['PROCESS'].keys() if proc != 'HELP' and proc != 'data_obs' and (self.inputConfig['PROCESS'][proc]['CODE'] == 2 or self.inputConfig['PROCESS'][proc]['CODE'] == 3)]
 
@@ -1614,7 +1622,7 @@ class TwoDAlphabet:
                         else:
                             thisVal = '-'  
 
-                    elif syst_line_key == 'KDEbandwidth' and proc == 'qcd' and 'pass' in chan:
+                    elif syst_line_key == self.rpfVarName and proc == 'qcd' and 'pass' in chan:
                         if 'SCALE' not in self.inputConfig['SYSTEMATIC'][syst_line_key]:
                             thisVal = '1.0'
                         else:
@@ -1622,7 +1630,8 @@ class TwoDAlphabet:
                     else:
                         thisVal = '-'
 
-                    syst_lines[syst_line_key] += (str(thisVal)+' ')
+                    syst_lines[syst_line_key] += str((str(thisVal)+' '))
+
 
         card_new.write(header.colliMate(bin_line+'\n',column_width))
         card_new.write(header.colliMate(processName_line+'\n',column_width))
@@ -1665,6 +1674,7 @@ class TwoDAlphabet:
         #     fd_file = TFile.Open(self.projPath+'/fitDiagnostics.root')
         # else:
         post_file = TFile.Open(self.tag+'/postfitshapes_'+fittag+'.root')
+        #axis_hist = post_file.Get(self.name+'_pass_LOW_'+self.name+'_prefit/data_obs')
         axis_hist = post_file.Get('pass_LOW_'+self.name+'_prefit/data_obs')
         fd_file = TFile.Open(self.tag+'/fitDiagnostics.root')
 
@@ -1747,6 +1757,7 @@ class TwoDAlphabet:
                 x_slice_list_post = []
                 # Grab everything and put clones in a dictionary
                 for c in ['LOW','SIG','HIGH']:
+                    #file_dir = self.name+"_"+cat+'_'+c+'_'+self.name
                     file_dir = cat+'_'+c+'_'+self.name
                     hist_dict[process][cat]['prefit_'+c] = post_file.Get(file_dir+'_prefit/'+process).Clone()
                     hist_dict[process][cat]['postfit_'+c] = post_file.Get(file_dir+'_postfit/'+process).Clone()
@@ -2013,7 +2024,7 @@ class TwoDAlphabet:
         if self.rpfRatio == False: rpf_zbins = [i/1000000. for i in range(0,1000001)]
         else: rpf_zbins = [i/1000. for i in range(0,5001)]
         rpf_samples = TH3F('rpf_samples','rpf_samples',rpf_xnbins, array.array('d',self.fullXbins), rpf_ynbins, array.array('d',self.newYbins), len(rpf_zbins)-1, array.array('d',rpf_zbins))# TH3 to store samples
-        sample_size = 500
+        sample_size = 100
 
         # Collect all final parameter values
         param_final = fit_result.floatParsFinal()
@@ -2056,7 +2067,8 @@ class TwoDAlphabet:
                         # Now get the Rpf function value for this bin 
                         self.allVars.append(x_const)
                         self.allVars.append(y_const)
-                        self.rpf.evalRpf(x_const, y_const,xbin,ybin)
+                        #self.rpf.evalRpf(x_const, y_const,xbin,ybin)
+                        self.rpf.Eval(xbin,ybin)
 
                     # Determine the category
                     if thisXCenter > self.newXbins['LOW'][0] and thisXCenter < self.newXbins['LOW'][-1]: # in the LOW category
@@ -2173,11 +2185,11 @@ def runMLFit(twoDs,rMin,rMax,systsToSet,skipPlots=False,prerun=False):
         header.executeCmd(systematic_analyzer_cmd)
 
         # Make a PDF of the nuisance_pulls.root
-        if os.path.exists('nuisance_pulls.root'):
-            nuis_file = TFile.Open('nuisance_pulls.root')
-            nuis_can = nuis_file.Get('nuisances')
-            nuis_can.Print('nuisance_pulls.pdf','pdf')
-            nuis_file.Close()
+        # if os.path.exists('nuisance_pulls.root'):
+        #     nuis_file = TFile.Open('nuisance_pulls.root')
+        #     nuis_can = nuis_file.Get('nuisances')
+        #     nuis_can.Print('nuisance_pulls.pdf','pdf')
+        #     nuis_file.Close()
 
     # Save out Rp/f to a text file and make a re-run config
     for twoD in twoDs:

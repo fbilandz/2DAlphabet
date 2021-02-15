@@ -17,8 +17,10 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h1 = rFile.Get("QCD_{0}".format(tagFail))
     h1.SetTitleOffset(2,"X")
     h1.SetTitleOffset(2,"Y")
-    h1.SetXTitle("M_{JY}")
-    h1.SetYTitle("M_{JJ}")
+
+    h1.SetXTitle("M_{JY} [GeV]")
+    h1.SetYTitle("M_{JJ} [GeV]")
+
     h1.SetTitle("QCD MC {0}".format(tagFail))
     r.gPad.SetPhi(210)
     h1.Draw("lego")
@@ -28,8 +30,10 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h2 = rFile.Get("QCD_{0}".format(tagPass))
     h2.SetTitleOffset(2,"X")
     h2.SetTitleOffset(2,"Y")
-    h2.SetXTitle("M_{JY}")
-    h2.SetYTitle("M_{JJ}")
+
+    h2.SetXTitle("M_{JY} [GeV]")
+    h2.SetYTitle("M_{JJ} [GeV]")
+
     h2.SetTitle("QCD MC {0}".format(tagPass))
     r.gPad.SetPhi(210)
     h2.Draw("lego")
@@ -48,9 +52,10 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
         chi2 = fitRes.Chi2()/fitRes.Ndf()
         h3.SetTitle("Fit to MC Rpf: #Chi^{2}/NDOF = %.2f" %chi2)
     #h3.SetTitle("Fit to MC Rpf")
-    h3.SetXTitle("M_{JY}")
+    h3.SetXTitle("M_{JY} [GeV]")
     h3.SetTitleOffset(1.5,"Y")
     h3.SetYTitle("R_{P/F}")
+
     h3.Draw("e")
     fUp.Draw("same")
     fNom.Draw("same")
@@ -61,13 +66,24 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h4 = rFile.Get("QCD_PassFromFail_{0}".format(tagPass))
     h4.SetTitleOffset(2,"X")
     h4.SetTitleOffset(2,"Y")
-    h4.SetXTitle("M_{JY}")
-    h4.SetYTitle("M_{JJ}")
+
+    h4.SetXTitle("M_{JY} [GeV]")
+    h4.SetYTitle("M_{JJ} [GeV]")
+
     h4.SetTitle("Fail x 1D Rpf")
     r.gPad.SetPhi(210)
     h4.Draw("lego")
 
     c.SaveAs(outputFile)
+
+    c2 = r.TCanvas("c2","",2000,2000)
+    c2.cd()
+    h3.Draw("e")
+    fUp.Draw("same")
+    fNom.Draw("same")
+    fDown.Draw("same")
+    c2.SaveAs(outputFile.replace(".pdf","_rpfFit.pdf"))    
+
 
 def plotVariations(inputFile,outputFile,tagPass):
     rFile = r.TFile.Open(inputFile)
@@ -78,7 +94,7 @@ def plotVariations(inputFile,outputFile,tagPass):
     hDn  = rFile.Get("QCD_PassFromFail_{0}_down".format(tagPass))
     c.cd(1)    
     hNomMJY = hNom.ProjectionX()
-    hNomMJY.SetTitle("QCD fail x 1DRpf MJY")
+    hNomMJY.SetTitle("QCD fail x 1DRpf M_{JY} [GeV]")
     hUpMJY  = hUp.ProjectionX()
     hDnMJY  = hDn.ProjectionX()
     hUpMJY.SetLineColor(r.kGreen)
@@ -94,7 +110,8 @@ def plotVariations(inputFile,outputFile,tagPass):
     legendMJY.Draw()
     c.cd(2)    
     hNomMJJ = hNom.ProjectionY()
-    hNomMJJ.SetTitle("QCD fail x 1DRpf MJJ")
+    hNomMJJ.SetTitle("QCD fail x 1DRpf M_{JJ} [GeV]")
+
     hUpMJJ  = hUp.ProjectionY()
     hDnMJJ  = hDn.ProjectionY()
     hUpMJJ.SetLineColor(r.kGreen)
@@ -111,51 +128,27 @@ def plotVariations(inputFile,outputFile,tagPass):
 
     c.SaveAs(outputFile)
 #SR
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_VRL.root","16_VRL.png","VRL","VRF")
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_VRT.root","16_VRT.png","VRT","VRF")
+plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","16_AL_L.pdf","AL_L","AL_AL")
+plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","16_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_VRL.root","17_VRL.png","VRL","VRF")
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_VRT.root","17_VRT.png","VRT","VRF")
+plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","17_AL_L.pdf","AL_L","AL_AL")
+plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","17_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_VRL.root","18_VRL.png","VRL","VRF")
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_VRT.root","18_VRT.png","VRT","VRF")
+plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","18_AL_L.pdf","AL_L","AL_AL")
+plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","18_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","16_LL.png","LL","AT")
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","16_TT.png","TT","ATT")
+plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","16_LL.pdf","LL","L_AL")
+plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","16_TT.pdf","TT","T_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","17_LL.png","LL","AT")
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","17_TT.png","TT","ATT")
+plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","17_LL.pdf","LL","L_AL")
+plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","17_TT.pdf","TT","T_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","18_LL.png","LL","AT")
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","18_TT.png","TT","ATT")
-
-
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_VRL.root","2016_VRL_rpfVar.png","VRL")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_VRT.root","2016_VRT_rpfVar.png","VRT")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","2016_LL_rpfVar.png","LL")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","2016_TT_rpfVar.png","TT")
-
-#ESB
-# plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_VRL.root","16_ESB_VRL.png","ESB_VRL","ESB_VRF")
-# plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_VRT.root","16_ESB_VRT.png","ESB_VRT","ESB_VRF")
-
-# plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_ESB_VRL.root","17_ESB_VRL.png","ESB_VRL","ESB_VRF")
-# plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_ESB_VRT.root","17_ESB_VRT.png","ESB_VRT","ESB_VRF")
-
-# plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_ESB_VRL.root","18_ESB_VRL.png","ESB_VRL","ESB_VRF")
-# plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_ESB_VRT.root","18_ESB_VRT.png","ESB_VRT","ESB_VRF")
-
-# plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_LL.root","16_ESB_LL.png","ESB_LL","ESB_AT")
-# plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_TT.root","16_ESB_TT.png","ESB_TT","ESB_ATT")
-
-# plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_ESB_LL.root","17_ESB_LL.png","ESB_LL","ESB_AT")
-# plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_ESB_TT.root","17_ESB_TT.png","ESB_TT","ESB_ATT")
-
-# plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_ESB_LL.root","18ESB_LL.png","ESB_LL","ESB_AT")
-# plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_ESB_TT.root","18_ESB_TT.png","ESB_TT","ESB_ATT")
+plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","18_LL.pdf","LL","L_AL")
+plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","18_TT.pdf","TT","T_AL")
 
 
-# plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_VRL.root","2016_ESB_VRL_rpfVar.png","ESB_VRL")
-# plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_VRT.root","2016_ESB_VRT_rpfVar.png","ESB_VRT")
-# plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_LL.root","2016_ESB_LL_rpfVar.png","ESB_LL")
-# plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_ESB_TT.root","2016_ESB_TT_rpfVar.png","ESB_TT")
+plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","2016_AL_L_rpfVar.pdf","AL_L")
+plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","2016_AL_T_rpfVar.pdf","AL_T")
+plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","2016_LL_rpfVar.pdf","LL")
+plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","2016_TT_rpfVar.pdf","TT")
+

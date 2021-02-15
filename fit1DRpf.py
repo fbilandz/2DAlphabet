@@ -43,6 +43,8 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     #customMJYbins = np.array([60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,300.,360.],dtype='float64')
     customMJYbins = np.array([60.,80.,100.,120.,160.,200.,240.,300.,360.],dtype='float64')
     #customMJYbins = np.array([60.,100.,140.,180.,260.,300.,360.],dtype='float64')#ESB_AL_T binning
+
+
     customMJJbins = np.linspace(yLo,yUp,num=binsY+1,endpoint=True,dtype='float64')
 
     hFail1D = hFail1D.Rebin(len(customMJYbins)-1,"QCD_mJY_mJJ_{0}_nom_reb".format(tag_fail),customMJYbins)
@@ -188,6 +190,7 @@ def applyFuncToTT(inputFile,fitFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60
     output.Close()
 
 #SR
+<<<<<<< HEAD
 # get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
 # get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
 get1DRpf("templates/WP_0.8_0.95/2017/QCD17.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
@@ -207,3 +210,23 @@ get1DRpf("templates/WP_0.8_0.95/2017/QCD17.root","templates/WP_0.8_0.95/2017/QCD
 # applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_LL.root","LL","L_AL")
 # applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_TT.root","TT","T_AL")
 
+=======
+get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+
+
+applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","TT","T_AL")
+applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","TT","T_AL")
+applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","TT","T_AL")
+applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_TT.root","TT","T_AL")
+>>>>>>> 12a338a022d3dfb0f5256ff7a0fa41c370649abf

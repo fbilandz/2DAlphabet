@@ -1013,7 +1013,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
 
                 LS = .16
 
-                pulls[hist_index].GetYaxis().SetRangeUser(-2.9,2.9)
+                pulls[hist_index].GetYaxis().SetRangeUser(-3.9,3.9)
                 pulls[hist_index].GetYaxis().SetTitleOffset(0.4)
                 # pulls[hist_index].GetXaxis().SetTitleOffset(0.9)
                              
@@ -1044,9 +1044,17 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 latex.SetTextFont(42)
                 latex.SetTextAlign(31) 
                 latex.SetTextSize(0.7*0.1)
-                #latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,"137 fb^{-1} (13 TeV)")
-
-    # CMS_lumi.CMS_lumi(myCan, year, 11)
+                if(year==2):
+                    lumi = "137 fb^{-1}"
+                elif(year==16):
+                    lumi = "35.9 fb^{-1}"
+                elif(year==17):
+                    lumi = "41.5 fb^{-1}"
+                elif(year==18):
+                    lumi = "59.8 fb^{-1}"
+                else:
+                    lumi = ""
+                latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,lumi)
 
     if rootfile:
         myCan.Print(tag+'/'+name+'.root','root')
