@@ -19,6 +19,7 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h1.SetTitleOffset(2,"Y")
     h1.SetXTitle("M_{JY} [GeV]")
     h1.SetYTitle("M_{JJ} [GeV]")
+
     h1.SetTitle("QCD MC {0}".format(tagFail))
     r.gPad.SetPhi(210)
     h1.Draw("lego")
@@ -30,6 +31,7 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h2.SetTitleOffset(2,"Y")
     h2.SetXTitle("M_{JY} [GeV]")
     h2.SetYTitle("M_{JJ} [GeV]")
+
     h2.SetTitle("QCD MC {0}".format(tagPass))
     r.gPad.SetPhi(210)
     h2.Draw("lego")
@@ -51,6 +53,7 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h3.SetXTitle("M_{JY} [GeV]")
     h3.SetTitleOffset(1.5,"Y")
     h3.SetYTitle("R_{P/F}")
+
     h3.Draw("e")
     fUp.Draw("same")
     fNom.Draw("same")
@@ -63,6 +66,7 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     h4.SetTitleOffset(2,"Y")
     h4.SetXTitle("M_{JY} [GeV]")
     h4.SetYTitle("M_{JJ} [GeV]")
+
     h4.SetTitle("Fail x 1D Rpf")
     r.gPad.SetPhi(210)
     h4.Draw("lego")
@@ -76,6 +80,7 @@ def plotDistributions(inputFile,outputFile,tagPass,tagFail):
     fNom.Draw("same")
     fDown.Draw("same")
     c2.SaveAs(outputFile.replace(".pdf","_rpfFit.pdf"))    
+
 
 def plotVariations(inputFile,outputFile,tagPass):
     rFile = r.TFile.Open(inputFile)
@@ -103,6 +108,7 @@ def plotVariations(inputFile,outputFile,tagPass):
     c.cd(2)    
     hNomMJJ = hNom.ProjectionY()
     hNomMJJ.SetTitle("QCD fail x 1DRpf M_{JJ} [GeV]")
+
     hUpMJJ  = hUp.ProjectionY()
     hDnMJJ  = hDn.ProjectionY()
     hUpMJJ.SetLineColor(r.kGreen)
@@ -142,3 +148,4 @@ plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","2016_AL_L_rpfVar
 plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","2016_AL_T_rpfVar.pdf","AL_T")
 plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","2016_LL_rpfVar.pdf","LL")
 plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","2016_TT_rpfVar.pdf","TT")
+

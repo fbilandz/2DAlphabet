@@ -32,6 +32,7 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
     rrpf.SetTitle("RRatio")
     print(MCfitFile,"QCD_{0}".format(tagFail))
 
+
     smooth_f = r.TFile.Open(MCfitFile)
     smooth_pass = smooth_f.Get("QCD_PassFromFail_{0}".format(tagPass))
     smooth_fail = smooth_f.Get("QCD_{0}".format(tagFail))
@@ -46,6 +47,7 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
     finalRpf = rrpf.Clone("Rpf_final")
     finalRpf.Multiply(rpf_mc)
     finalRpf.SetZTitle("R_{P/F}^{data}")
+
     finalRpf.SetTitle("MC Rpf x RRatio")
 
     ttbar_f = r.TFile.Open(TTbarFile)
@@ -54,6 +56,7 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
         dataTag = "data_obs"
     else:
         dataTag = "data_obs"
+
     dataPass = data_f.Get("{0}_mJY_mJJ_{1}_nom".format(dataTag,tagPass))
     dataFail = data_f.Get("{0}_mJY_mJJ_{1}_nom".format(dataTag,tagFail))
     ttbarPass = ttbar_f.Get("TTbar_mJY_mJJ_{0}_nom".format(tagPass))
@@ -149,3 +152,4 @@ plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","RunII_AL/AL_T_2018/plo
 # plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","2018_AL_T/2018_AL_T_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","2018_AL_T_Rpfs.png","AL_T","AL_AL")
 # plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","2018_TT/2018_TT_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/pseudo.root","2018_TT_Rpfs.png","TT","ATT")
 # plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","2018_LL/2018_LL_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/pseudo.root","2018_LL_Rpfs.png","LL","AT")
+

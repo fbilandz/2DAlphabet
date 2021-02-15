@@ -1632,6 +1632,7 @@ class TwoDAlphabet:
 
                     syst_lines[syst_line_key] += str((str(thisVal)+' '))
 
+
         card_new.write(header.colliMate(bin_line+'\n',column_width))
         card_new.write(header.colliMate(processName_line+'\n',column_width))
         card_new.write(header.colliMate(processCode_line+'\n',column_width))

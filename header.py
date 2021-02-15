@@ -1056,8 +1056,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                     lumi = ""
                 latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,lumi)
 
-    # CMS_lumi.CMS_lumi(myCan, year, 11)
-
     if rootfile:
         myCan.Print(tag+'/'+name+'.root','root')
     else:
