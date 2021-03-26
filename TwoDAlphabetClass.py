@@ -1027,10 +1027,10 @@ class TwoDAlphabet:
                     # Only care about syst if it's a shape (CODE == 2 or 3)
                     if this_syst_dict['CODE'] == 2:   # same file as norm, different hist names
 
-                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'])
-                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'])
-                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'])
-                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'])
+                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',process))
+                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',process))
+                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',process))
+                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',process))
 
                     if this_syst_dict['CODE'] == 3:   # different file as norm and different files for each process if specified, same hist name if not specified in inputConfig
                         # User will most likely have different file for each process but maybe not so check
@@ -2160,7 +2160,7 @@ def runMLFit(twoDs,rMin,rMax,systsToSet,skipPlots=False,prerun=False):
     else: blind_option = '--setParameters r=1'
 
     # Run Combine
-    FitDiagnostics_command = 'combine -M FitDiagnostics -d '+card_name+' '+blind_option+' --saveWorkspace --cminDefaultMinimizerStrategy 0 ' + sig_option +verbose 
+    FitDiagnostics_command = 'combine -M FitDiagnostics -d '+card_name+' '+blind_option+' --saveWorkspace --cminDefaultMinimizerStrategy 0 --minos all' + sig_option +verbose 
 
     with header.cd(projDir):
         command_saveout = open('FitDiagnostics_command.txt','w')
@@ -2181,15 +2181,15 @@ def runMLFit(twoDs,rMin,rMax,systsToSet,skipPlots=False,prerun=False):
         diffnuis_cmd = 'python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/diffNuisances.py fitDiagnostics.root --abs -g nuisance_pulls.root'
         header.executeCmd(diffnuis_cmd)
 
-        systematic_analyzer_cmd = 'python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/systematicsAnalyzer.py '+card_name+' --all -f html > systematics_table.html'
-        header.executeCmd(systematic_analyzer_cmd)
+        # systematic_analyzer_cmd = 'python $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/test/systematicsAnalyzer.py '+card_name+' --all -f html > systematics_table.html'
+        # header.executeCmd(systematic_analyzer_cmd)
 
-        # Make a PDF of the nuisance_pulls.root
-        # if os.path.exists('nuisance_pulls.root'):
-        #     nuis_file = TFile.Open('nuisance_pulls.root')
-        #     nuis_can = nuis_file.Get('nuisances')
-        #     nuis_can.Print('nuisance_pulls.pdf','pdf')
-        #     nuis_file.Close()
+        #Make a PDF of the nuisance_pulls.root
+        if os.path.exists('nuisance_pulls.root'):
+            nuis_file = TFile.Open('nuisance_pulls.root')
+            nuis_can = nuis_file.Get('nuisances')
+            nuis_can.Print('nuisance_pulls.pdf','pdf')
+            nuis_file.Close()
 
     # Save out Rp/f to a text file and make a re-run config
     for twoD in twoDs:
