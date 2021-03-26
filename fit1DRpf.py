@@ -189,44 +189,22 @@ def applyFuncToTT(inputFile,fitFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60
     errdown.Write()    
     output.Close()
 
-#SR
-<<<<<<< HEAD
-# get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2017/QCD17.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2017/QCD17.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L_.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+
+# get1DRpf("templates/2016/QCD.root","templates/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+# get1DRpf("templates/2016/QCD.root","templates/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+get1DRpf("templates/2017/QCD.root","templates/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/2017/QCD.root","templates/2017/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+get1DRpf("templates/2018/QCD.root","templates/2018/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+get1DRpf("templates/2018/QCD.root","templates/2018/QCD1DRpf_AL_L.root","AL_L","AL_AL")
+# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_T.root","AL_T","AL_AL")
+# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_L.root","AL_L","AL_AL")
 
 
-# applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","LL","L_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","TT","T_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","LL","L_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","TT","T_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","LL","L_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","TT","T_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_LL.root","LL","L_AL")
-# applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_TT.root","TT","T_AL")
-
-=======
-get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-
-
-applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","LL","L_AL")
-applyFuncToTT("templates/WP_0.8_0.95/2016/QCD.root","templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","TT","T_AL")
-applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","LL","L_AL")
-applyFuncToTT("templates/WP_0.8_0.95/2017/QCD.root","templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","TT","T_AL")
-applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","LL","L_AL")
-applyFuncToTT("templates/WP_0.8_0.95/2018/QCD.root","templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","TT","T_AL")
-applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_L.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_LL.root","LL","L_AL")
-applyFuncToTT("templates/WP_0.8_0.95/RunII/QCD.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_AL_T.root","templates/WP_0.8_0.95/RunII/QCD1DRpf_TT.root","TT","T_AL")
->>>>>>> 12a338a022d3dfb0f5256ff7a0fa41c370649abf
+# applyFuncToTT("templates/2016/QCD.root","templates/2016/QCD1DRpf_AL_L.root","templates/2016/QCD1DRpf_LL.root","LL","L_AL")
+# applyFuncToTT("templates/2016/QCD.root","templates/2016/QCD1DRpf_AL_T.root","templates/2016/QCD1DRpf_TT.root","TT","T_AL")
+applyFuncToTT("templates/2017/QCD.root","templates/2017/QCD1DRpf_AL_L.root","templates/2017/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/2017/QCD.root","templates/2017/QCD1DRpf_AL_T.root","templates/2017/QCD1DRpf_TT.root","TT","T_AL")
+applyFuncToTT("templates/2018/QCD.root","templates/2018/QCD1DRpf_AL_L.root","templates/2018/QCD1DRpf_LL.root","LL","L_AL")
+applyFuncToTT("templates/2018/QCD.root","templates/2018/QCD1DRpf_AL_T.root","templates/2018/QCD1DRpf_TT.root","TT","T_AL")
+# applyFuncToTT("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_L.root","templates/RunII/QCD1DRpf_LL.root","LL","L_AL")
+# applyFuncToTT("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_T.root","templates/RunII/QCD1DRpf_TT.root","TT","T_AL")

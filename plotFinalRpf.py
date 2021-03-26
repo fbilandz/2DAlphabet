@@ -83,28 +83,28 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
     rpf_mc.SetTitleOffset(1.7,"Y")
     rpf_mc.SetTitleOffset(1.7,"Z")
     rpf_mc.Draw("lego")
-    c.SaveAs(outputFile.replace(".png","_mcRpf.pdf"))
+    c.SaveAs(outputFile.replace(".png","_mcRpf.png"))
     c.Clear()
     rrpf.SetTitle("")
     rrpf.SetTitleOffset(1.7,"X")
     rrpf.SetTitleOffset(1.7,"Y")
     rrpf.SetTitleOffset(1.7,"Z")
     rrpf.Draw("lego")
-    c.SaveAs(outputFile.replace(".png","_rratio.pdf"))
+    c.SaveAs(outputFile.replace(".png","_rratio.png"))
     c.Clear()
     finalRpf.SetTitle("")
     finalRpf.SetTitleOffset(1.7,"X")
     finalRpf.SetTitleOffset(1.7,"Y")
     finalRpf.SetTitleOffset(1.7,"Z")
     finalRpf.Draw("lego")
-    c.SaveAs(outputFile.replace(".png","_finalRpf.pdf"))
+    c.SaveAs(outputFile.replace(".png","_finalRpf.png"))
     c.Clear()
     dataRpf.SetTitle("")
     dataRpf.SetTitleOffset(1.7,"X")
     dataRpf.SetTitleOffset(1.7,"Y")
     dataRpf.SetTitleOffset(1.7,"Z")
     dataRpf.Draw("lego")
-    c.SaveAs(outputFile.replace(".png","_dataRpf.pdf"))
+    c.SaveAs(outputFile.replace(".png","_dataRpf.png"))
 
     # c.Divide(2,2)
     # c.cd(1)
@@ -122,34 +122,10 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
     # r.gPad.Update()
 
 #SR
-plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","2016_AL/AL_L_2016/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/JetHT.root","2016_AL_L_Rpfs.png","AL_L","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","2017_AL/AL_L_2017/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","2017_AL_L_Rpfs.png","AL_L","AL_AL")
-#plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","2018_AL/AL_L_2018/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","2018_AL_L_Rpfs.png","AL_L","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","RunII_AL/AL_L_2016/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/JetHT.root","RunII_16_AL_L_Rpfs.png","AL_L","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","RunII_AL/AL_L_2017/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","RunII_17_AL_L_Rpfs.png","AL_L","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","RunII_AL/AL_L_2018/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","RunII_18_AL_L_Rpfs.png","AL_L","AL_AL")
+#plotRpfs("templates/2016/QCD1DRpf_AL_L.root","2016_AL/AL_L_2016/plots/postfit_rpf_fitb.root","templates/2016/TTbar.root","templates/2016/JetHT.root","2016_AL_L_Rpfs.png","AL_L","AL_AL")
+plotRpfs("templates/2017/QCD1DRpf_AL_L.root","2017_AL/AL_L_2017/plots/postfit_rpf_fitb.root","templates/2017/TTbar.root","templates/2017/JetHT.root","RpfPlots/2017_AL_L_Rpfs.png","AL_L","AL_AL")
+plotRpfs("templates/2018/QCD1DRpf_AL_L.root","2018_AL/AL_L_2018/plots/postfit_rpf_fitb.root","templates/2018/TTbar.root","templates/2018/JetHT.root","RpfPlots/2018_AL_L_Rpfs.png","AL_L","AL_AL")
 
-plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","2016_AL/AL_T_2016/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/JetHT.root","2016_AL_T_Rpfs.png","AL_T","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","2017_AL/AL_T_2017/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","2017_AL_T_Rpfs.png","AL_T","AL_AL")
-#plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","2018_AL/AL_T_2018/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","2018_AL_T_Rpfs.png","AL_T","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","RunII_AL/AL_T_2016/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/JetHT.root","RunII_16_AL_T_Rpfs.png","AL_T","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","RunII_AL/AL_T_2017/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","RunII_17_AL_T_Rpfs.png","AL_T","AL_AL")
-plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","RunII_AL/AL_T_2018/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","RunII_18_AL_T_Rpfs.png","AL_T","AL_AL")
-
-
-
-
-
-# plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","2016_TT/2016_TT_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/pseudo.root","2016_TT_Rpfs.png","TT","ATT")
-# plotRpfs("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","2016_LL/2016_LL_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2016/TTbar.root","templates/WP_0.8_0.95/2016/pseudo.root","2016_LL_Rpfs.png","LL","AT")
-
-# plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","2017_AL_L/2017_AL_L_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","2017_AL_L_Rpfs.png","AL_L","AL_AL")
-# plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","2017_AL_T/2017_AL_T_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/JetHT.root","2017_AL_T_Rpfs.png","AL_T","AL_AL")
-# plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","2017_TT/2017_TT_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/pseudo.root","2017_TT_Rpfs.png","TT","ATT")
-# plotRpfs("templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","2017_LL/2017_LL_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2017/TTbar.root","templates/WP_0.8_0.95/2017/pseudo.root","2017_LL_Rpfs.png","LL","AT")
-
-# plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","2018_AL_L/2018_AL_L_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","2018_AL_L_Rpfs.png","AL_L","AL_AL")
-# plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","2018_AL_T/2018_AL_T_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/JetHT.root","2018_AL_T_Rpfs.png","AL_T","AL_AL")
-# plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","2018_TT/2018_TT_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/pseudo.root","2018_TT_Rpfs.png","TT","ATT")
-# plotRpfs("templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","2018_LL/2018_LL_22/plots/postfit_rpf_fitb.root","templates/WP_0.8_0.95/2018/TTbar.root","templates/WP_0.8_0.95/2018/pseudo.root","2018_LL_Rpfs.png","LL","AT")
-
+#plotRpfs("templates/2016/QCD1DRpf_AL_T.root","2016_AL/AL_T_2016/plots/postfit_rpf_fitb.root","templates/2016/TTbar.root","templates/2016/JetHT.root","2016_AL_T_Rpfs.png","AL_T","AL_AL")
+plotRpfs("templates/2017/QCD1DRpf_AL_T.root","2017_AL/AL_T_2017/plots/postfit_rpf_fitb.root","templates/2017/TTbar.root","templates/2017/JetHT.root","RpfPlots/2017_AL_T_Rpfs.png","AL_T","AL_AL")
+plotRpfs("templates/2018/QCD1DRpf_AL_T.root","2018_AL/AL_T_2018/plots/postfit_rpf_fitb.root","templates/2018/TTbar.root","templates/2018/JetHT.root","RpfPlots/2018_AL_T_Rpfs.png","AL_T","AL_AL")   
