@@ -58,16 +58,16 @@
   "OPTIONS": {
     "blindedFit": false, 
     "blindedPlots": false, 
-    "name": "AL_L_2017", 
+    "name": "AL_T_2017", 
     "prerun": false, 
-    "tag": "AL_L_2017", 
+    "tag": "AL_T_2017", 
     "verbosity": 0,
     "rpfRatio":{
-            "FILE": "templates/2017/QCD1DRpf_AL_L.root",
-            "HISTPASS": "QCD_PassFromFail_AL_L",
+            "FILE": "templates/2017/QCD1DRpf_AL_T.root",
+            "HISTPASS": "QCD_PassFromFail_AL_T",
             "HISTFAIL": "QCD_AL_AL",
             "SMOOTH":false,
-            "SYSTEMATICS":["MCRpfUnc17L"]
+            "SYSTEMATICS":["MCRpfUnc17T"]
         }
   }, 
   "PROCESS": {
@@ -76,14 +76,45 @@
       "CODE": 1, 
       "FILE": "templates/2017/JetHT.root", 
       "HISTFAIL": "data_obs_mJY_mJJ_AL_AL_nom", 
-      "HISTPASS": "data_obs_mJY_mJJ_AL_L_nom", 
+      "HISTPASS": "data_obs_mJY_mJJ_AL_T_nom", 
       "SYSTEMATICS": []
     },
-    "TTbar": {
+    "TTbar_bqq": {
       "CODE": 2, 
       "FILE": "templates/2017/TTbar.root", 
-      "HISTFAIL": "TTbar_mJY_mJJ_AL_AL_nom", 
-      "HISTPASS": "TTbar_mJY_mJJ_AL_L_nom", 
+      "HISTFAIL": "TTbar_bqq_mJY_mJJ_AL_AL_nom", 
+      "HISTPASS": "TTbar_bqq_mJY_mJJ_AL_T_nom", 
+      "COLOR":2, 
+      "SYSTEMATICS": [
+        "lumi17","purewt","pdfrewt","topxsec","jes17","jer17","jms17","jmr17","trigHT17","prefiring17"
+      ]
+    },
+    "TTbar_bq": {
+      "CODE": 2, 
+      "FILE": "templates/2017/TTbar.root", 
+      "HISTFAIL": "TTbar_bq_mJY_mJJ_AL_AL_nom", 
+      "HISTPASS": "TTbar_bq_mJY_mJJ_AL_T_nom",
+      "COLOR":2, 
+      "SYSTEMATICS": [
+        "lumi17","purewt","pdfrewt","topxsec","jes17","jer17","jms17","jmr17","trigHT17","prefiring17"
+      ]
+    },
+    "TTbar_qq": {
+      "CODE": 2, 
+      "FILE": "templates/2017/TTbar.root", 
+      "HISTFAIL": "TTbar_qq_mJY_mJJ_AL_AL_nom", 
+      "HISTPASS": "TTbar_qq_mJY_mJJ_AL_T_nom", 
+      "COLOR":2, 
+      "SYSTEMATICS": [
+        "lumi17","purewt","pdfrewt","topxsec","jes17","jer17","jms17","jmr17","trigHT17","prefiring17"
+      ]
+    },
+    "TTbar_unm": {
+      "CODE": 2, 
+      "FILE": "templates/2017/TTbar.root", 
+      "HISTFAIL": "TTbar_unm_mJY_mJJ_AL_AL_nom", 
+      "HISTPASS": "TTbar_unm_mJY_mJJ_AL_T_nom", 
+      "COLOR":2, 
       "SYSTEMATICS": [
         "lumi17","purewt","pdfrewt","topxsec","jes17","jer17","jms17","jmr17","trigHT17","prefiring17"
       ]
@@ -92,7 +123,8 @@
       "CODE": 0, 
       "FILE": "templates/2017/MX1600_MY125.root", 
       "HISTFAIL": "MX1600_MY125_mJY_mJJ_AL_AL_nom", 
-      "HISTPASS": "MX1600_MY125_mJY_mJJ_AL_L_nom", 
+      "HISTPASS": "MX1600_MY125_mJY_mJJ_AL_T_nom", 
+      "COLOR":2, 
       "SYSTEMATICS": [
         "lumi17","purewt","pdfrewt","jes17","jer17","jms17","jmr17","pnetXbb17","trigHT17","prefiring17"
       ]
@@ -122,71 +154,59 @@
       "VAL": 1.02
     }, 
     "trigHT17": {
-      "CODE": 3,
-      "FILE_UP_*":"templates/2017/*.root", 
-      "FILE_DOWN_*":"templates/2017/*.root", 
-      "HISTPASS_UP_*": "*_mJY_mJJ_AL_L_trigUp",
-      "HISTPASS_DOWN_*": "*_mJY_mJJ_AL_L_trigDown",
-      "HISTFAIL_UP_*": "*_mJY_mJJ_AL_AL_trigUp",
-      "HISTFAIL_DOWN_*": "*_mJY_mJJ_AL_AL_trigDown", 
+      "CODE": 2,
+      "HISTPASS_UP": "*_mJY_mJJ_AL_T_trigUp",
+      "HISTPASS_DOWN": "*_mJY_mJJ_AL_T_trigDown",
+      "HISTFAIL_UP": "*_mJY_mJJ_AL_AL_trigUp",
+      "HISTFAIL_DOWN": "*_mJY_mJJ_AL_AL_trigDown", 
       "SCALE": 1.0
     },
     "jes17": {
-      "CODE": 3,
-      "FILE_UP_*":"templates/2017/*.root", 
-      "FILE_DOWN_*":"templates/2017/*.root", 
-      "HISTPASS_UP_*": "*_mJY_mJJ_AL_L_jesUp",
-      "HISTPASS_DOWN_*": "*_mJY_mJJ_AL_L_jesDown",
-      "HISTFAIL_UP_*": "*_mJY_mJJ_AL_AL_jesUp",
-      "HISTFAIL_DOWN_*": "*_mJY_mJJ_AL_AL_jesDown", 
+      "CODE": 2,
+      "HISTPASS_UP": "*_mJY_mJJ_AL_T_jesUp",
+      "HISTPASS_DOWN": "*_mJY_mJJ_AL_T_jesDown",
+      "HISTFAIL_UP": "*_mJY_mJJ_AL_AL_jesUp",
+      "HISTFAIL_DOWN": "*_mJY_mJJ_AL_AL_jesDown", 
       "SCALE": 1.0
     },
     "jer17": {
-      "CODE": 3,
-      "FILE_UP_*":"templates/2017/*.root", 
-      "FILE_DOWN_*":"templates/2017/*.root", 
-      "HISTPASS_UP_*": "*_mJY_mJJ_AL_L_jerUp",
-      "HISTPASS_DOWN_*": "*_mJY_mJJ_AL_L_jerDown",
-      "HISTFAIL_UP_*": "*_mJY_mJJ_AL_AL_jerUp",
-      "HISTFAIL_DOWN_*": "*_mJY_mJJ_AL_AL_jerDown", 
+      "CODE": 2,
+      "HISTPASS_UP": "*_mJY_mJJ_AL_T_jerUp",
+      "HISTPASS_DOWN": "*_mJY_mJJ_AL_T_jerDown",
+      "HISTFAIL_UP": "*_mJY_mJJ_AL_AL_jerUp",
+      "HISTFAIL_DOWN": "*_mJY_mJJ_AL_AL_jerDown", 
       "SCALE": 1.0
     },
     "jms17": {
-      "CODE": 3,
-      "FILE_UP_*":"templates/2017/*.root", 
-      "FILE_DOWN_*":"templates/2017/*.root", 
-      "HISTPASS_UP_*": "*_mJY_mJJ_AL_L_jmsUp",
-      "HISTPASS_DOWN_*": "*_mJY_mJJ_AL_L_jmsDown",
-      "HISTFAIL_UP_*": "*_mJY_mJJ_AL_AL_jmsUp",
-      "HISTFAIL_DOWN_*": "*_mJY_mJJ_AL_AL_jmsDown", 
+      "CODE": 2,
+      "HISTPASS_UP": "*_mJY_mJJ_AL_T_jmsUp",
+      "HISTPASS_DOWN": "*_mJY_mJJ_AL_T_jmsDown",
+      "HISTFAIL_UP": "*_mJY_mJJ_AL_AL_jmsUp",
+      "HISTFAIL_DOWN": "*_mJY_mJJ_AL_AL_jmsDown", 
       "SCALE": 1.0
     },
     "jmr17": {
-      "CODE": 3,
-      "FILE_UP_*":"templates/2017/*.root", 
-      "FILE_DOWN_*":"templates/2017/*.root", 
-      "HISTPASS_UP_*": "*_mJY_mJJ_AL_L_jmrUp",
-      "HISTPASS_DOWN_*": "*_mJY_mJJ_AL_L_jmrDown",
-      "HISTFAIL_UP_*": "*_mJY_mJJ_AL_AL_jmrUp",
-      "HISTFAIL_DOWN_*": "*_mJY_mJJ_AL_AL_jmrDown", 
+      "CODE": 2,
+      "HISTPASS_UP": "*_mJY_mJJ_AL_T_jmrUp",
+      "HISTPASS_DOWN": "*_mJY_mJJ_AL_T_jmrDown",
+      "HISTFAIL_UP": "*_mJY_mJJ_AL_AL_jmrUp",
+      "HISTFAIL_DOWN": "*_mJY_mJJ_AL_AL_jmrDown", 
       "SCALE": 1.0
     },
-    "MCRpfUnc17L":{
+    "MCRpfUnc17T":{
             "CODE": 2,
-            "HISTPASS_UP":"QCD_PassFromFail_AL_L_up",
+            "HISTPASS_UP":"QCD_PassFromFail_AL_T_up",
             "HISTFAIL_UP":"QCD_AL_AL",
-            "HISTPASS_DOWN":"QCD_PassFromFail_AL_L_down",
+            "HISTPASS_DOWN":"QCD_PassFromFail_AL_T_down",
             "HISTFAIL_DOWN":"QCD_AL_AL",
             "SCALE":1
         },
     "pnetXbb17":{
-            "CODE": 3,
-            "FILE_UP_*":"templates/2017/*.root", 
-            "FILE_DOWN_*":"templates/2017/*.root", 
-            "HISTPASS_UP_*":"*_mJY_mJJ_AL_L_pnetUp",
-            "HISTFAIL_UP_*":"*_mJY_mJJ_AL_AL_pnetUp",
-            "HISTPASS_DOWN_*":"*_mJY_mJJ_AL_L_pnetDown",
-            "HISTFAIL_DOWN_*":"*_mJY_mJJ_AL_AL_pnetDown",
+            "CODE": 2,
+            "HISTPASS_UP":"*_mJY_mJJ_AL_T_pnetUp",
+            "HISTFAIL_UP":"*_mJY_mJJ_AL_AL_pnetUp",
+            "HISTPASS_DOWN":"*_mJY_mJJ_AL_T_pnetDown",
+            "HISTFAIL_DOWN":"*_mJY_mJJ_AL_AL_pnetDown",
             "SCALE":1.0
         }
   }
