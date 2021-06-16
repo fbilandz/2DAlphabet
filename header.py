@@ -598,11 +598,11 @@ def projInfoLookup(projDir,card_tag):
         twoD_names = getTwoDAlphaNames(firstline)
         for n in twoD_names:
             proj_info[n] = pickle.load(open(projDir+'/'+n+'/saveOut.p','r'))
-            proj_info[n]['rpfVarNames'] = proj_info[n]['rpf'].getRpfVarNames()
+            proj_info[n]['rpfVarNames'] = proj_info[n]['rpf'].getFuncVarNames()
 
     elif not more_than_one:
         proj_info[card_tag] = pickle.load(open(projDir+'/saveOut.p','r'))
-        proj_info['rpfVarNames'] = proj_info['rpf'].getRpfVarNames()
+        proj_info['rpfVarNames'] = proj_info['rpf'].getFuncVarNames()
 
     return proj_info
 
@@ -1073,7 +1073,9 @@ def reducedCorrMatrixHist(fit_result,varsOfInterest=[]):
     finalParamsDict = {}
     for cm_index in range(nParams):
         if varsOfInterest == []:
-            if 'Fail_' not in finalPars.at(cm_index).GetName():
+            if("Fail_" in finalPars.at(cm_index).GetName() or "prop_" in finalPars.at(cm_index).GetName()):
+                continue
+            else:
                 finalParamsDict[finalPars.at(cm_index).GetName()] = cm_index
         else:
             if finalPars.at(cm_index).GetName() in varsOfInterest:
@@ -1290,7 +1292,7 @@ def StatsForCondor(run_name,toyDict,tarFilesList,commands,files_to_grab=[]):
                 for c in these_commands:
                     this_run_file.write(c+'\n')
                 this_run_file.write(out_tar_cmd.replace(run_name+'.tgz',run_name+'_'+str(this_seed)+'.tgz')+'\n')
-                this_run_file.write('cp '+this_run_name+'.tgz $CMSSW_BASE/../')
+                this_run_file.write('cp '+this_run_name+'.tgz ../../../.')
                 this_run_file.close()
                 Condor('run_combine_%s.sh'%(i))
                 
@@ -1301,7 +1303,7 @@ def StatsForCondor(run_name,toyDict,tarFilesList,commands,files_to_grab=[]):
             for c in commands:
                 this_run_file.write(c+'\n')
             this_run_file.write(out_tar_cmd+'\n')
-            this_run_file.write('cp '+run_name+'.tgz $CMSSW_BASE/../')
+            this_run_file.write('cp '+run_name+'.tgz ../../../.')
             this_run_file.close()
             Condor('run_combine.sh')
 

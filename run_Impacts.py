@@ -6,16 +6,15 @@ def SystematicParser(cardname,year):
     systs = []
     f = open(cardname,'r')
     dropSys = ["jer","jes","jmr","jms"]#These are renamed to jes16/17/18...
-    renamedSys = {"trig":"muonTrig","iso":"muonIso","id":"muonID","sf":"ak4SF"}
+    renamedSys = {"trig":"muonTrig","iso":"muonIso","id":"muonID","sf":"btagSFAK4_","lumi":"lumi"}
     for l in f.readlines():
-        #if 'lnN' in l or 'shape' in l or 'rpf' in l: don't want rpf
-        if 'lnN' in l or 'shape' in l:
+        if 'lnN' in l or 'shape' in l or 'rateParam' in l or "rpf" in l:
             syst_name = l.split(' ')[0]
             if(syst_name in dropSys):
                 continue
             if(syst_name in renamedSys.keys()):
                 if(year=="RunII"):
-                    systs.append(renamedSys[syst_name]+"16")
+                    #systs.append(renamedSys[syst_name]+"16")
                     systs.append(renamedSys[syst_name]+"17")
                     systs.append(renamedSys[syst_name]+"18")
                 else:

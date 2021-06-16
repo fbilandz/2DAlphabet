@@ -10,7 +10,7 @@ class QuadraticFit:
     self.rm = range_min
     self.rp = range_max
     self.name = name
-    self.fit = TF1("QuadraticFit", "[0]+ [1]*x + [2]*x*x",self.rm,self.rp)
+    self.fit = TF1("QuadraticFit_"+self.name, "[0]+ [1]*x + [2]*x*x",self.rm,self.rp)
     self.fit.SetParameter(0, init_var[0]) 
     self.fit.SetParameter(1, init_var[0])
     self.fit.SetParameter(2, init_var[0])

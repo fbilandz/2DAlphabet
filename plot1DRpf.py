@@ -7,6 +7,26 @@ r.gROOT.SetBatch(True)
 r.gStyle.SetOptStat(0000)
 r.gROOT.ForceStyle()
 
+def rebin2DHisto(hToRebin,hModel,name):
+    hRes = hModel.Clone(name)
+    hRes.Reset()
+    xaxis = hToRebin.GetXaxis()
+    yaxis = hToRebin.GetYaxis()
+    xaxis_re = hRes.GetXaxis()
+    yaxis_re = hRes.GetYaxis()
+    for i in range(1,hToRebin.GetNbinsX()+1):
+        for j in range(1,hToRebin.GetNbinsY()+1):
+            x = xaxis.GetBinCenter(i)
+            y = yaxis.GetBinCenter(j)
+            i_re = xaxis_re.FindBin(x)
+            j_re = yaxis_re.FindBin(y)
+            value = hToRebin.GetBinContent(i,j)
+            err = hToRebin.GetBinError(i,j)
+            err_re = np.sqrt(hRes.GetBinError(i_re,j_re)*hRes.GetBinError(i_re,j_re)+err*err)
+            hRes.Fill(x,y,value)
+            hRes.SetBinError(i_re,j_re,err_re)
+    hRes.SetDirectory(0)
+    return hRes
 
 
 def plotDistributions(inputFile,outputFile,tagPass,tagFail):
@@ -128,27 +148,65 @@ def plotVariations(inputFile,outputFile,tagPass):
 
     c.SaveAs(outputFile)
 #SR
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","16_AL_L.pdf","AL_L","AL_AL")
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","16_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_L.root","17_AL_L.pdf","AL_L","AL_AL")
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_AL_T.root","17_AL_T.pdf","AL_T","AL_AL")
+# plotDistributions("templates/2017/QCD1DRpf_AL_L.root","17_AL_L.pdf","AL_L","AL_AL")
+# plotDistributions("templates/2017/QCD1DRpf_AL_T.root","17_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_L.root","18_AL_L.pdf","AL_L","AL_AL")
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_AL_T.root","18_AL_T.pdf","AL_T","AL_AL")
+# plotDistributions("templates/2018/QCD1DRpf_AL_L.root","18_AL_L.pdf","AL_L","AL_AL")
+# plotDistributions("templates/2018/QCD1DRpf_AL_T.root","18_AL_T.pdf","AL_T","AL_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","16_LL.pdf","LL","L_AL")
-plotDistributions("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","16_TT.pdf","TT","T_AL")
+# plotDistributions("templates/2017/QCD1DRpf_LL.root","17_LL.pdf","LL","L_AL")
+# plotDistributions("templates/2017/QCD1DRpf_TT.root","17_TT.pdf","TT","T_AL")
 
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_LL.root","17_LL.pdf","LL","L_AL")
-plotDistributions("templates/WP_0.8_0.95/2017/QCD1DRpf_TT.root","17_TT.pdf","TT","T_AL")
-
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_LL.root","18_LL.pdf","LL","L_AL")
-plotDistributions("templates/WP_0.8_0.95/2018/QCD1DRpf_TT.root","18_TT.pdf","TT","T_AL")
+# plotDistributions("templates/2018/QCD1DRpf_LL.root","18_LL.pdf","LL","L_AL")
+# plotDistributions("templates/2018/QCD1DRpf_TT.root","18_TT.pdf","TT","T_AL")
 
 
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_L.root","2016_AL_L_rpfVar.pdf","AL_L")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_AL_T.root","2016_AL_T_rpfVar.pdf","AL_T")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_LL.root","2016_LL_rpfVar.pdf","LL")
-plotVariations("templates/WP_0.8_0.95/2016/QCD1DRpf_TT.root","2016_TT_rpfVar.pdf","TT")
+def get2DRpf(regionPass,regionFail):
+    #f       = r.TFile.Open("templates/2017/QCD.root")
+    f       = r.TFile.Open("templates/2017/dataMinusTTbar.root")
+    hPass   = f.Get("QCD_mJY_mJJ_{0}_nom".format(regionPass))
+    hFail   = f.Get("QCD_mJY_mJJ_{0}_nom".format(regionFail))
 
+    modelHistoFile = r.TFile.Open("2017_NAL_L_sanityCheck/NAL_L_2017/plots/postfit_rpf_fitb.root")
+    modelHisto     = modelHistoFile.Get("rpf_final")
+
+
+    hPass = rebin2DHisto(hPass,modelHisto,"QCD_MC_Pass")
+    hFail = rebin2DHisto(hFail,modelHisto,"QCD_MC_Fail")
+
+    hRpf    = hPass.Clone("Rpf_{0}".format(regionPass))
+    hRpf.Divide(hFail)
+    hRpf.SetDirectory(0)
+    return hRpf
+
+def plot2DRpf(hRpf,outputFile,drawOpt="lego",zMax="",zTitle=""):
+    c = r.TCanvas("","",3000,2000)
+    c.SetMargin(0.15,0.15,0.15,0.15)
+    c.cd(0)
+    hRpf.SetTitle("")
+    hRpf.SetTitleOffset(1.7,"X")
+    hRpf.SetTitleOffset(1.7,"Y")
+    hRpf.SetTitleOffset(1.7,"Z")
+    hRpf.SetZTitle(zTitle)
+    if(zMax):
+        hRpf.GetZaxis().SetRangeUser(0.,zMax)
+    hRpf.Draw(drawOpt)
+    c.SaveAs(outputFile)
+
+regionsPass = ["AL_L","AL_T","NAL_L","NAL_T"]
+regionsFail = ["AL_AL","AL_AL","NAL_AL","NAL_AL"]
+rpfs = {}
+zMax = [0.05,0.05,0.3,0.1]
+
+for i in range(len(regionsPass)):
+    hRpf = get2DRpf(regionsPass[i],regionsFail[i])
+    rpfs[regionsPass[i]] = hRpf
+    plot2DRpf(hRpf,"Rpf_{0}.png".format(regionsPass[i]),zMax=zMax[i],zTitle="R_{P/F}")
+
+
+rpfs["NAL_T"].Divide(rpfs["NAL_L"])
+plot2DRpf(rpfs["NAL_L"],"ratio_NALL_NALT.png",drawOpt="lego",zMax=0.1,zTitle="R_{Ratio}")
+
+rpfs["AL_T"].Divide(rpfs["AL_L"])
+plot2DRpf(rpfs["AL_L"],"ratio_ALL_ALT.png",drawOpt="lego",zMax=0.05,zTitle="R_{Ratio}")

@@ -43,10 +43,39 @@ def runLimit(twoDs,postfitWorkspaceDir,blindData=True,freezeFail=False,location=
     for t in twoDs:
         del t
 
-    # Make a prefit workspace from the data card
+
     print 'cd '+projDir
     with header.cd(projDir):
-        t2w_cmd = 'text2workspace.py -b '+card_name+' -o workspace.root --X-no-jmax' 
+        #Combine the CR datacard with the SR
+        writeCmds = """
+        echo 'bqqT_16       rateParam *TT_2016 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_16       rateParam *LL_2016 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_16        rateParam *TT_2016 TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_16        rateParam *LL_2016 TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqT_17       rateParam *TT_2017 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_17       rateParam *LL_2017 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_17        rateParam *TT_2017 TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_17        rateParam *LL_2017 TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqT_18       rateParam *TT_2018 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_18       rateParam *LL_2018 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_18        rateParam *TT_2018 TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_18        rateParam *LL_2018 TTbar_bq 1.0 [0.0,5.0]' >> {0}""".format(card_name)
+        for writeCmd in writeCmds.split("\n"):
+            header.executeCmd(writeCmd)
+
+        cpCmd = "cp ../CR_cards/CR*txt ."
+
+        header.executeCmd(cpCmd)
+
+        cardCmd = "combineCards.py ch1={0} CR_L_17=CR_L_17.txt CR_T_17=CR_T_17.txt CR_L_18=CR_L_18.txt CR_T_18=CR_T_18.txt> combinedCard.txt".format(card_name)
+        header.executeCmd(cardCmd)
+        sedCmd = "sed -i -e 's/\(ch1_\|ch1=\|T_CR\|L_CR\)//g' combinedCard.txt"
+        header.executeCmd(sedCmd)
+        #-------------------------------------------------
+
+        # Make a prefit workspace from the data card
+        #t2w_cmd = 'text2workspace.py -b '+card_name+' -o workspace.root --X-no-jmax' 
+        t2w_cmd = 'text2workspace.py -b combinedCard.txt -o workspace.root --X-no-jmax' 
         header.executeCmd(t2w_cmd)
         # header.setSnapshot(os.environ['CMSSW_BASE']+'/src/2DAlphabet/'+postfitWorkspaceDir+'/')
 

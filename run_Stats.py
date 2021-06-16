@@ -18,11 +18,16 @@ def getMasks(filename):
 
     # Loop over all vars in original workspace and add any masked region names to list
     for i in range(allVars.getSize()):
-        if 'mask_pass_SIG_' in allVars[i].GetName():
-            if allVars[i].getValV() == 1:
-                masked_regions.append(allVars[i].GetName())
+        #if 'mask_pass_SIG_' in allVars[i].GetName():
+        print(allVars[i].GetName())
+        if 'mask_CR' in allVars[i].GetName():
+            masked_regions.append(allVars[i].GetName())
+            #if allVars[i].getValV() == 1:#Why this?
+            #    masked_regions.append(allVars[i].GetName())
 
     f.Close()
+    print("MASKING: ")
+    print(masked_regions)
 
     return masked_regions
    
@@ -133,11 +138,15 @@ with header.cd(projDir):
     blind_string = blind_string+blind_string.replace('setParametersForFit','setParametersForEval')#.replace('=1','=0')
 
     if len(masked_regions) > 0: 
-    	freeze_r_string = " --fixedSignalStrength 0"
+        freeze_r_string = " --fixedSignalStrength 0"
     else: freeze_r_string = ''
 
     if options.freezeFail:
-        freeze_string = ' --freezeParameters "var{Fail_.*}"'
+        #freeze_string = ' --freezeParameters "var{Fail_.*}"'
+        #freeze_string = ' --freezeParameters Fail_bin_10-1_NAL_L_2018,Fail_bin_12-2_NAL_L_2018,Fail_bin_13-3_NAL_L_2018,Fail_bin_13-5_NAL_L_2017'
+        freeze_string = ' --freezeParameters rgx{.+Other.+}'
+
+    #else: freeze_string = ''
     else: freeze_string = ''
 
     # Make a prefit workspace from the data card
@@ -397,7 +406,8 @@ if options.biasStudy !='' or options.ftest:
             # Make a prefit workspace from the data card
             # if options.workspace == '':
             altworkspace_name = 'stats_workspace.root'
-            t2w_cmd = 'text2workspace.py --channel-masks -b card_'+altcard_tag+'.txt -o '+altworkspace_name
+            #t2w_cmd = 'text2workspace.py --channel-masks -b card_'+altcard_tag+'.txt -o '+altworkspace_name
+            t2w_cmd = 'text2workspace.py --channel-masks -b combinedCard.txt -o '+altworkspace_name
             # if not (os.path.exists(workspace_name)):# and options.ftest == 'pvalue'):
             header.executeCmd(t2w_cmd,options.dryrun)
 

@@ -1,0 +1,44 @@
+imax * number of channels
+jmax * number of processes minus 1
+kmax * number of nuisance parameters
+------------------------------------------------------------
+bin T_CR
+observation -1.0
+------------------------------------------------------------
+
+shapes *	 T_CR	 /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/results/templates_semileptonic/combined/2017/$PROCESS17.root	 $PROCESS_mSD_T_nom $PROCESS_mSD_T_$SYSTEMATIC
+shapes TTbar_bqq T_CR	 /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/results/templates_semileptonic/combined/2017/TTbar17.root	 $PROCESS_mSD_T_nom $PROCESS_mSD_T_$SYSTEMATIC
+shapes TTbar_bq T_CR	 /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/results/templates_semileptonic/combined/2017/TTbar17.root	 $PROCESS_mSD_T_nom $PROCESS_mSD_T_$SYSTEMATIC
+shapes data_obs	 T_CR	 /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/results/templates_semileptonic/combined/2017/data_obs17.root	 data_obs_mSD_T
+------------------------------------------------------------
+bin		T_CR	T_CR	T_CR	
+process		TTbar_bqq	TTbar_bq	Other	
+process		1	2	3	
+rate		-1	-1	-1	
+lumi	lnN	1.025	1.025	1.025	
+pdfrewt	lnN	1.01	1.01	1.01	
+jer	shape	1.0	1.0	1.0	
+jes	shape	1.0	1.0	1.0	
+jms	shape	1.0	1.0	1.0	
+jmr	shape	1.0	1.0	1.0	
+id	shape	1.0	1.0	1.0	
+sf	shape	1.0	1.0	1.0	
+puRwt	shape	1.0	1.0	1.0	
+ptRwt	shape	1.0	1.0	-
+
+bqqT_17 rateParam T_CR TTbar_bqq 1.0 [0.0,5.0]
+bqT_17 rateParam T_CR TTbar_bq 1.0 [0.0,5.0]
+
+
+nuisance edit rename TTbar_bqq T_CR jms jmsAK8_bqq17
+nuisance edit rename TTbar_bq T_CR jms jmsAK8_bq17
+nuisance edit rename Other T_CR jms jmsAK8_Other17
+nuisance edit rename * T_CR jmr jmrAK817
+nuisance edit rename * T_CR id muonID17
+nuisance edit rename * T_CR sf btagSFAK4_17
+nuisance edit rename * T_CR jes jes17
+nuisance edit rename * T_CR jer jer17
+nuisance edit rename * T_CR lumi lumi17
+nuisance edit rename * T_CR ptRwt topPtRwt
+
+* autoMCStats 10000 1 1

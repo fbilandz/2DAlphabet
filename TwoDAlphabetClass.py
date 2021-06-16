@@ -100,8 +100,10 @@ class TwoDAlphabet:
                 else:
                     raise ValueError('Only MC Rpf unc is accepted as a systematic uncertainty for the qcd mc Rpf ratio.')
             else:
+                self.rpfVarName=""
                 self.rpfRatioVariations = False
         else:
+            self.rpfVarName=""
             self.rpfRatioVariations = False
 
         # Check if doing an external import
@@ -636,7 +638,8 @@ class TwoDAlphabet:
                         for v in ['nom','up','down']:
                             for x in ['X','Y']:
                                 if x == 'Y': 
-                                    reg = 'SIG'
+                                    #reg = 'SIG'
+                                    reg = 'FULL'
                                     if v == 'nom': tracking_dict[r][x][v] = self.orgFile.Get(self.organizedDict[proc][r+'_'+reg]['nominal']).ProjectionY(proc +'_'+r+ '_'+syst+'_'+x+'_'+v)
                                     else: tracking_dict[r][x][v] = self.orgFile.Get(self.organizedDict[proc][r+'_'+reg][syst+v.capitalize()]).ProjectionY(proc +'_'+r+ '_'+syst+'_'+x+'_'+v)
 
@@ -1026,11 +1029,16 @@ class TwoDAlphabet:
 
                     # Only care about syst if it's a shape (CODE == 2 or 3)
                     if this_syst_dict['CODE'] == 2:   # same file as norm, different hist names
+                        #Matej's fix to use 16/17/18 templates in the same .json
+                        #Avoids me having to rename TTbar_ templates to 16_TTbar_*
+                        tempProcessName = process.replace("16_","")
+                        tempProcessName = tempProcessName.replace("17_","")
+                        tempProcessName = tempProcessName.replace("18_","")
 
-                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',process))
-                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',process))
-                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',process))
-                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',process))
+                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',tempProcessName))
+                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',tempProcessName))
+                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',tempProcessName))
+                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',tempProcessName))
 
                     if this_syst_dict['CODE'] == 3:   # different file as norm and different files for each process if specified, same hist name if not specified in inputConfig
                         # User will most likely have different file for each process but maybe not so check
@@ -2160,7 +2168,7 @@ def runMLFit(twoDs,rMin,rMax,systsToSet,skipPlots=False,prerun=False):
     else: blind_option = '--setParameters r=1'
 
     # Run Combine
-    FitDiagnostics_command = 'combine -M FitDiagnostics -d '+card_name+' '+blind_option+' --saveWorkspace --cminDefaultMinimizerStrategy 0 --minos all' + sig_option +verbose 
+    FitDiagnostics_command = 'combine -M FitDiagnostics -d '+card_name+' '+blind_option+' --saveWorkspace --cminDefaultMinimizerStrategy 0 ' + sig_option +verbose 
 
     with header.cd(projDir):
         command_saveout = open('FitDiagnostics_command.txt','w')
