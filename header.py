@@ -676,9 +676,9 @@ def reorderHists(histlist):
     return outlist
 
 def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
-            titles=[],dataName='Data',bkgNames=[],signalNames=[],logy=False,
+            titles=[],subtitles=[],sliceVar='X',dataName='Data',bkgNames=[],signalNames=[],logy=False,
             rootfile=False,xtitle='',ytitle='',ztitle='',dataOff=False,
-            datastyle='pe',year=1, addSignals=True, extraText='Preliminary'):  
+            datastyle='pe',year=1, addSignals=True, extraText=''):  
     # histlist is just the generic list but if bkglist is specified (non-empty)
     # then this function will stack the backgrounds and compare against histlist as if 
     # it is data. The imporant bit is that bkglist is a list of lists. The first index
@@ -717,6 +717,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
         if signals != []: signals = reorderHists(signals)
         if totalBkg != None: totalBkg = reorderHists(totalBkg)
         if titles != []: titles = reorderHists(titles)
+        if subtitles != []: subtitles = reorderHists(subtitles)
     else:
         print 'histlist of size ' + str(len(histlist)) + ' not currently supported'
         print histlist
@@ -850,6 +851,11 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 tot_hist.SetMarkerStyle(0)
                 tot_hists.append(tot_hist)
                 tot_hists_err.append(tot_hist.Clone())
+                tot_hists[hist_index].SetLineColor(kBlack)
+                tot_hists_err[hist_index].SetLineColor(kBlack)
+                tot_hists_err[hist_index].SetLineWidth(0)
+                tot_hists_err[hist_index].SetFillColor(kBlack)
+                tot_hists_err[hist_index].SetFillStyle(3354)
                 legends[hist_index].AddEntry(tot_hists_err[hist_index],'Total bkg unc.','F')
 
                 # Set margins and make these two pads primitives of the division, thisPad
@@ -988,9 +994,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                     tot_hists[hist_index].SetMinimum(1e-3)
                     tot_hists_err[hist_index].SetMinimum(1e-3)
                 tot_hists[hist_index].Draw('hist same')
-
-                tot_hists_err[hist_index].SetFillColor(kBlack)
-                tot_hists_err[hist_index].SetFillStyle(3354)
                 tot_hists_err[hist_index].Draw('e2 same')
 
                 legends[hist_index].SetBorderSize(0)

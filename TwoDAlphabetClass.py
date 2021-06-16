@@ -1031,14 +1031,10 @@ class TwoDAlphabet:
                     if this_syst_dict['CODE'] == 2:   # same file as norm, different hist names
                         #Matej's fix to use 16/17/18 templates in the same .json
                         #Avoids me having to rename TTbar_ templates to 16_TTbar_*
-                        tempProcessName = process.replace("16_","")
-                        tempProcessName = tempProcessName.replace("17_","")
-                        tempProcessName = tempProcessName.replace("18_","")
-
-                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',tempProcessName))
-                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',tempProcessName))
-                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',tempProcessName))
-                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',tempProcessName))
+                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',process))
+                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',process))
+                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',process))
+                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',process))
 
                     if this_syst_dict['CODE'] == 3:   # different file as norm and different files for each process if specified, same hist name if not specified in inputConfig
                         # User will most likely have different file for each process but maybe not so check
@@ -1880,6 +1876,7 @@ class TwoDAlphabet:
                     bkg_process_names = []
                     signal_process_list = []
                     signal_names = []
+                    sliceranges = []
                     this_totalbkg = hist_dict['TotalBkg'][cat][plotType+str(regionNum)]
                     totalBkgs.append(this_totalbkg)
                     if 'y' in plotType:
@@ -1925,7 +1922,7 @@ class TwoDAlphabet:
                     if self.plotTitles: titleList.append('Data vs bkg - %s - [%s,%s]'%(cat,low_str,high_str))
                     else: titleList.append('')
 
-                    # Make the "money plot" of just the y projection of the signal region
+                    sliceranges = [h.GetName().split('_')[-1] for h in dataList]
 
             if self.plotEvtsPerUnit:
                 new_dataList = []
@@ -1961,22 +1958,31 @@ class TwoDAlphabet:
             else:
                 yAxisTitle = 'Events / bin'
 
+            root_out = TFile.Open(self.projPath+'/plots/fit_'+fittag+'/'+plotType+'_fit'+fittag+'.root','RECREATE')
+            for h in dataList+bkgList+totalBkgs+signalList:
+                if isinstance(h,list):
+                    for i in h:
+                        root_out.WriteObject(i,i.GetName())
+                else:
+                    root_out.WriteObject(h,h.GetName())
+            root_out.Close()
+
             if 'x' in plotType:
                 header.makeCan('plots/fit_'+fittag+'/'+plotType+'_fit'+fittag,self.projPath,
-                    dataList,bkglist=bkgList,totalBkg=totalBkgs,signals=signalList,
+                    dataList,bkglist=bkgList,subtitles=sliceranges,sliceVar=self.yVarTitle,totalBkg=totalBkgs,signals=signalList,
                     bkgNames=bkgNameList,signalNames=signal_names,titles=titleList,
                     colors=colors,xtitle=self.xVarTitle,ytitle=yAxisTitle,year=self.year,addSignals=self.addSignals)
                 header.makeCan('plots/fit_'+fittag+'/'+plotType+'_fit'+fittag+'_log',self.projPath,
-                    dataList,bkglist=bkgList_logy,totalBkg=totalBkgs,signals=signalList,
+                    dataList,bkglist=bkgList_logy,subtitles=sliceranges,sliceVar=self.yVarTitle,totalBkg=totalBkgs,signals=signalList,
                     bkgNames=bkgNameList_logy,signalNames=signal_names,titles=titleList,
                     colors=colors_logy,xtitle=self.xVarTitle,ytitle=yAxisTitle,logy=True,year=self.year,addSignals=self.addSignals)
             elif 'y' in plotType:
                 header.makeCan('plots/fit_'+fittag+'/'+plotType+'_fit'+fittag,self.projPath,
-                    dataList,bkglist=bkgList,totalBkg=totalBkgs,signals=signalList,
+                    dataList,bkglist=bkgList,subtitles=sliceranges,sliceVar=self.xVarTitle,totalBkg=totalBkgs,signals=signalList,
                     bkgNames=bkgNameList,signalNames=signal_names,titles=titleList,
                     colors=colors,xtitle=self.yVarTitle,ytitle=yAxisTitle,year=self.year,addSignals=self.addSignals)
                 header.makeCan('plots/fit_'+fittag+'/'+plotType+'_fit'+fittag+'_log',self.projPath,
-                    dataList,bkglist=bkgList_logy,totalBkg=totalBkgs,signals=signalList,
+                    dataList,bkglist=bkgList_logy,subtitles=sliceranges,sliceVar=self.xVarTitle,totalBkg=totalBkgs,signals=signalList,
                     bkgNames=bkgNameList_logy,signalNames=signal_names,titles=titleList,
                     colors=colors_logy,xtitle=self.yVarTitle,ytitle=yAxisTitle,logy=True,year=self.year,addSignals=self.addSignals)
 
