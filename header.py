@@ -800,10 +800,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
         else:
             #Set data to kPoisson (asymmetric CI) errors
             hist.SetBinErrorOption(1)
-            tempF = TFile.Open("test.root","UPDATE")
-            tempF.cd()
-            hist.Write()
-            tempF.Close()
             titleSize = 0.09
             alpha = 1
             if dataOff:
