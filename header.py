@@ -612,8 +612,10 @@ def getTwoDAlphaNames(line):
     return proj_names
 
 def executeCmd(cmd,dryrun=False):
-    print 'Executing: '+cmd
+    if dryrun:
+        print cmd
     if not dryrun:
+        print 'Executing: '+cmd
         subprocess.call([cmd],shell=True)
 
 def dictToLatexTable(dict2convert,outfilename,roworder=[],columnorder=[]):
@@ -678,7 +680,9 @@ def reorderHists(histlist):
 def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
             titles=[],subtitles=[],sliceVar='X',dataName='Data',bkgNames=[],signalNames=[],logy=False,
             rootfile=False,xtitle='',ytitle='',ztitle='',dataOff=False,
-            datastyle='pe',year=1, addSignals=True, extraText=''):  
+            datastyle='pe0',year=1, addSignals=True, extraText=''):
+
+    #Matej's fix Toy Data in dataName if plotting toy data
     # histlist is just the generic list but if bkglist is specified (non-empty)
     # then this function will stack the backgrounds and compare against histlist as if 
     # it is data. The imporant bit is that bkglist is a list of lists. The first index
@@ -747,6 +751,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
     logString = ''
     tot_sigs = []
 
+
     # For each hist/data distribution
     for hist_index, hist in enumerate(histlist):
         # Grab the pad we want to draw in
@@ -793,6 +798,12 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
         
         # Otherwise it's a TH1 hopefully
         else:
+            #Set data to kPoisson (asymmetric CI) errors
+            hist.SetBinErrorOption(1)
+            tempF = TFile.Open("test.root","UPDATE")
+            tempF.cd()
+            hist.Write()
+            tempF.Close()
             titleSize = 0.09
             alpha = 1
             if dataOff:
@@ -987,6 +998,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                         else: this_sig_name = signalNames[isig]
 
                         legends[hist_index].AddEntry(sig,this_sig_name,'L')
+                        sig.Scale(0.1)#Matej's fix, DELETE ME
                         sig.Draw('hist same')
 
                 # Draw total hist and error
@@ -1050,13 +1062,13 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                 if(year==2):
                     lumi = "137 fb^{-1}"
                 elif(year==16):
-                    lumi = "35.9 fb^{-1}"
+                    lumi = "36.3 fb^{-1}"
                 elif(year==17):
                     lumi = "41.5 fb^{-1}"
                 elif(year==18):
                     lumi = "59.8 fb^{-1}"
                 else:
-                    lumi = ""
+                    lumi = "138 fb^{-1}"
                 latex.DrawLatex(1-0.05,1-0.1+0.2*0.1,lumi)
 
     if rootfile:
@@ -1155,14 +1167,11 @@ def Make_Pull_plot( DATA,BKG):
             sigma = sqrt(FSerr*FSerr + BKGerr*BKGerr)
         else:
             sigma = sqrt(BKGerr*BKGerr)
-        if FScont == 0.0:
-            pull.SetBinContent(ibin, 0.0 )  
-        else:
-            if sigma != 0 :
-                pullcont = (pull.GetBinContent(ibin))/sigma
-                pull.SetBinContent(ibin, pullcont)
-            else :
-                pull.SetBinContent(ibin, 0.0 )
+        if sigma != 0 :
+            pullcont = (pull.GetBinContent(ibin))/sigma
+            pull.SetBinContent(ibin, pullcont)
+        else :
+            pull.SetBinContent(ibin, 0.0 )
     return pull
 
 def Make_up_down(hist):
