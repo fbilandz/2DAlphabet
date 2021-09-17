@@ -10,6 +10,16 @@ import CMS_lumi, tdrstyle
 import pprint
 pp = pprint.PrettyPrinter(indent = 2)
 
+def remakeHisto(histo):
+    tempHisto = histo.Clone("tempHisto")
+    print(histo.Integral())
+    histo.Reset()
+    print(histo.Integral())
+    for i in range(1,tempHisto.GetNbinsX()+1):
+        histo.SetBinContent(i,tempHisto.GetBinContent(i))
+    histo.SetBinErrorOption(1)
+    return histo
+
 def setSnapshot(d=''):
     # header.executeCmd('combine -M MultiDimFit -d '+base_workspace+' --saveWorkspace --freezeParameters r --setParameters r=0,'+mask_string)
     # f = TFile.Open('higgsCombineTest.MultiDimFit.mH120.root')
@@ -690,6 +700,8 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
     # For example you could have:
     #   histlist = [data1, data2]
     #   bkglist = [[bkg1_1,bkg2_1],[bkg1_2,bkg2_2]]
+    if not "postfit_proj" in name:
+        return
 
     if len(histlist) == 1:
         width = 800
@@ -799,6 +811,8 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
         # Otherwise it's a TH1 hopefully
         else:
             #Set data to kPoisson (asymmetric CI) errors
+            hist.SetBinErrorOption(1)
+            hist = remakeHisto(hist)
             hist.SetBinErrorOption(1)
             titleSize = 0.09
             alpha = 1
