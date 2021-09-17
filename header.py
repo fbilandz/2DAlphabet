@@ -12,9 +12,7 @@ pp = pprint.PrettyPrinter(indent = 2)
 
 def remakeHisto(histo):
     tempHisto = histo.Clone("tempHisto")
-    print(histo.Integral())
     histo.Reset()
-    print(histo.Integral())
     for i in range(1,tempHisto.GetNbinsX()+1):
         histo.SetBinContent(i,tempHisto.GetBinContent(i))
     histo.SetBinErrorOption(1)
@@ -692,7 +690,6 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
             rootfile=False,xtitle='',ytitle='',ztitle='',dataOff=False,
             datastyle='pe0',year=1, addSignals=True, extraText=''):
 
-    #Matej's fix Toy Data in dataName if plotting toy data
     # histlist is just the generic list but if bkglist is specified (non-empty)
     # then this function will stack the backgrounds and compare against histlist as if 
     # it is data. The imporant bit is that bkglist is a list of lists. The first index
@@ -700,8 +697,8 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
     # For example you could have:
     #   histlist = [data1, data2]
     #   bkglist = [[bkg1_1,bkg2_1],[bkg1_2,bkg2_2]]
-    if not "postfit_proj" in name:
-        return
+    # if not "postfit_proj" in name:
+    #     return
 
     if len(histlist) == 1:
         width = 800
@@ -1008,7 +1005,7 @@ def makeCan(name, tag, histlist, bkglist=[],totalBkg=None,signals=[],colors=[],
                         else: this_sig_name = signalNames[isig]
 
                         legends[hist_index].AddEntry(sig,this_sig_name,'L')
-                        sig.Scale(0.1)#Matej's fix, DELETE ME
+                        sig.Scale(0.1)#Adjust for signal normalization
                         sig.Draw('hist same')
 
                 # Draw total hist and error
