@@ -1,0 +1,10 @@
+universe              = vanilla
+executable            = condor/limits/limits.sh
+output                = limits_condor/output/output_$(Process).out
+error                 = limits_condor/output/output_$(Process).err
+log                   = limits_condor/output/output_$(Process).log
++JobFlavour           = "espresso"
+Arguments = "$(args)"
+use_x509userproxy = true
+Queue args from condor/limits/args.txt
+queue

@@ -1,0 +1,196 @@
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX1000_MY200 MX1600_MY125:MX1000_MY200 --unblindData
+cp MX1000_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX1000_MY200.root
+rm -rf limits_condor/MX1000_MY200
+mv MX1000_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX1400_MY125 MX1600_MY125:MX1400_MY125 --unblindData
+cp MX1400_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX1400_MY125.root
+rm -rf limits_condor/MX1400_MY125
+mv MX1400_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX1500_MY500 MX1600_MY125:MX1500_MY500 --unblindData
+cp MX1500_MY500/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX1500_MY500.root
+rm -rf limits_condor/MX1500_MY500
+mv MX1500_MY500 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX1600_MY350 MX1600_MY125:MX1600_MY350 --unblindData
+cp MX1600_MY350/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX1600_MY350.root
+rm -rf limits_condor/MX1600_MY350
+mv MX1600_MY350 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX1900_MY60 MX1600_MY125:MX1900_MY60 --unblindData
+cp MX1900_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX1900_MY60.root
+rm -rf limits_condor/MX1900_MY60
+mv MX1900_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2000_MY60 MX1600_MY125:MX2000_MY60 --unblindData
+cp MX2000_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2000_MY60.root
+rm -rf limits_condor/MX2000_MY60
+mv MX2000_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2000_MY250 MX1600_MY125:MX2000_MY250 --unblindData
+cp MX2000_MY250/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2000_MY250.root
+rm -rf limits_condor/MX2000_MY250
+mv MX2000_MY250 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY60 MX1600_MY125:MX2200_MY60 --unblindData
+cp MX2200_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY60.root
+rm -rf limits_condor/MX2200_MY60
+mv MX2200_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY70 MX1600_MY125:MX2200_MY70 --unblindData
+cp MX2200_MY70/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY70.root
+rm -rf limits_condor/MX2200_MY70
+mv MX2200_MY70 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY100 MX1600_MY125:MX2200_MY100 --unblindData
+cp MX2200_MY100/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY100.root
+rm -rf limits_condor/MX2200_MY100
+mv MX2200_MY100 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY200 MX1600_MY125:MX2200_MY200 --unblindData
+cp MX2200_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY200.root
+rm -rf limits_condor/MX2200_MY200
+mv MX2200_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY300 MX1600_MY125:MX2200_MY300 --unblindData
+cp MX2200_MY300/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY300.root
+rm -rf limits_condor/MX2200_MY300
+mv MX2200_MY300 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2200_MY350 MX1600_MY125:MX2200_MY350 --unblindData
+cp MX2200_MY350/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2200_MY350.root
+rm -rf limits_condor/MX2200_MY350
+mv MX2200_MY350 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2400_MY60 MX1600_MY125:MX2400_MY60 --unblindData
+cp MX2400_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2400_MY60.root
+rm -rf limits_condor/MX2400_MY60
+mv MX2400_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2400_MY70 MX1600_MY125:MX2400_MY70 --unblindData
+cp MX2400_MY70/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2400_MY70.root
+rm -rf limits_condor/MX2400_MY70
+mv MX2400_MY70 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2400_MY125 MX1600_MY125:MX2400_MY125 --unblindData
+cp MX2400_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2400_MY125.root
+rm -rf limits_condor/MX2400_MY125
+mv MX2400_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2400_MY200 MX1600_MY125:MX2400_MY200 --unblindData
+cp MX2400_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2400_MY200.root
+rm -rf limits_condor/MX2400_MY200
+mv MX2400_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2400_MY400 MX1600_MY125:MX2400_MY400 --unblindData
+cp MX2400_MY400/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2400_MY400.root
+rm -rf limits_condor/MX2400_MY400
+mv MX2400_MY400 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2600_MY60 MX1600_MY125:MX2600_MY60 --unblindData
+cp MX2600_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2600_MY60.root
+rm -rf limits_condor/MX2600_MY60
+mv MX2600_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2600_MY125 MX1600_MY125:MX2600_MY125 --unblindData
+cp MX2600_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2600_MY125.root
+rm -rf limits_condor/MX2600_MY125
+mv MX2600_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2600_MY150 MX1600_MY125:MX2600_MY150 --unblindData
+cp MX2600_MY150/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2600_MY150.root
+rm -rf limits_condor/MX2600_MY150
+mv MX2600_MY150 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2600_MY200 MX1600_MY125:MX2600_MY200 --unblindData
+cp MX2600_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2600_MY200.root
+rm -rf limits_condor/MX2600_MY200
+mv MX2600_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2600_MY400 MX1600_MY125:MX2600_MY400 --unblindData
+cp MX2600_MY400/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2600_MY400.root
+rm -rf limits_condor/MX2600_MY400
+mv MX2600_MY400 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY60 MX1600_MY125:MX2800_MY60 --unblindData
+cp MX2800_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY60.root
+rm -rf limits_condor/MX2800_MY60
+mv MX2800_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY80 MX1600_MY125:MX2800_MY80 --unblindData
+cp MX2800_MY80/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY80.root
+rm -rf limits_condor/MX2800_MY80
+mv MX2800_MY80 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY125 MX1600_MY125:MX2800_MY125 --unblindData
+cp MX2800_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY125.root
+rm -rf limits_condor/MX2800_MY125
+mv MX2800_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY150 MX1600_MY125:MX2800_MY150 --unblindData
+cp MX2800_MY150/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY150.root
+rm -rf limits_condor/MX2800_MY150
+mv MX2800_MY150 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY200 MX1600_MY125:MX2800_MY200 --unblindData
+cp MX2800_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY200.root
+rm -rf limits_condor/MX2800_MY200
+mv MX2800_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY250 MX1600_MY125:MX2800_MY250 --unblindData
+cp MX2800_MY250/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY250.root
+rm -rf limits_condor/MX2800_MY250
+mv MX2800_MY250 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY300 MX1600_MY125:MX2800_MY300 --unblindData
+cp MX2800_MY300/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY300.root
+rm -rf limits_condor/MX2800_MY300
+mv MX2800_MY300 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY500 MX1600_MY125:MX2800_MY500 --unblindData
+cp MX2800_MY500/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY500.root
+rm -rf limits_condor/MX2800_MY500
+mv MX2800_MY500 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX2800_MY600 MX1600_MY125:MX2800_MY600 --unblindData
+cp MX2800_MY600/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX2800_MY600.root
+rm -rf limits_condor/MX2800_MY600
+mv MX2800_MY600 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY60 MX1600_MY125:MX3000_MY60 --unblindData
+cp MX3000_MY60/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY60.root
+rm -rf limits_condor/MX3000_MY60
+mv MX3000_MY60 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY70 MX1600_MY125:MX3000_MY70 --unblindData
+cp MX3000_MY70/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY70.root
+rm -rf limits_condor/MX3000_MY70
+mv MX3000_MY70 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY80 MX1600_MY125:MX3000_MY80 --unblindData
+cp MX3000_MY80/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY80.root
+rm -rf limits_condor/MX3000_MY80
+mv MX3000_MY80 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY100 MX1600_MY125:MX3000_MY100 --unblindData
+cp MX3000_MY100/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY100.root
+rm -rf limits_condor/MX3000_MY100
+mv MX3000_MY100 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY125 MX1600_MY125:MX3000_MY125 --unblindData
+cp MX3000_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY125.root
+rm -rf limits_condor/MX3000_MY125
+mv MX3000_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY300 MX1600_MY125:MX3000_MY300 --unblindData
+cp MX3000_MY300/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY300.root
+rm -rf limits_condor/MX3000_MY300
+mv MX3000_MY300 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY350 MX1600_MY125:MX3000_MY350 --unblindData
+cp MX3000_MY350/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY350.root
+rm -rf limits_condor/MX3000_MY350
+mv MX3000_MY350 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3000_MY600 MX1600_MY125:MX3000_MY600 --unblindData
+cp MX3000_MY600/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3000_MY600.root
+rm -rf limits_condor/MX3000_MY600
+mv MX3000_MY600 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY125 MX1600_MY125:MX3500_MY125 --unblindData
+cp MX3500_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY125.root
+rm -rf limits_condor/MX3500_MY125
+mv MX3500_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY200 MX1600_MY125:MX3500_MY200 --unblindData
+cp MX3500_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY200.root
+rm -rf limits_condor/MX3500_MY200
+mv MX3500_MY200 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY250 MX1600_MY125:MX3500_MY250 --unblindData
+cp MX3500_MY250/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY250.root
+rm -rf limits_condor/MX3500_MY250
+mv MX3500_MY250 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY300 MX1600_MY125:MX3500_MY300 --unblindData
+cp MX3500_MY300/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY300.root
+rm -rf limits_condor/MX3500_MY300
+mv MX3500_MY300 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY400 MX1600_MY125:MX3500_MY400 --unblindData
+cp MX3500_MY400/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY400.root
+rm -rf limits_condor/MX3500_MY400
+mv MX3500_MY400 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY450 MX1600_MY125:MX3500_MY450 --unblindData
+cp MX3500_MY450/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY450.root
+rm -rf limits_condor/MX3500_MY450
+mv MX3500_MY450 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX3500_MY600 MX1600_MY125:MX3500_MY600 --unblindData
+cp MX3500_MY600/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX3500_MY600.root
+rm -rf limits_condor/MX3500_MY600
+mv MX3500_MY600 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX4000_MY125 MX1600_MY125:MX4000_MY125 --unblindData
+cp MX4000_MY125/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX4000_MY125.root
+rm -rf limits_condor/MX4000_MY125
+mv MX4000_MY125 limits_condor/.
+python run_Limit.py configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_LL_1DRpf_DD_NAL_11Rratio.json configs/WP_0.94_0.98/RunII/SR_unblinded/RunII_TT_1DRpf_DD_NAL_11Rratio.json  -d RunII_SR_data_11_CR_zeroFail/ -q MX4000_MY200 MX1600_MY125:MX4000_MY200 --unblindData
+cp MX4000_MY200/higgsCombineTest.AsymptoticLimits.mH120.root /afs/cern.ch/user/m/mrogulji/UL_X_YH/X_YH_4b/StatAna/limits/obsLimits/MX4000_MY200.root
+rm -rf limits_condor/MX4000_MY200
+mv MX4000_MY200 limits_condor/.
