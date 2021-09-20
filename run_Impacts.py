@@ -5,22 +5,23 @@ import header
 def SystematicParser(cardname,year):
     systs = []
     f = open(cardname,'r')
-    dropSys = ["jer","jes","jmr","jms"]#These are renamed to jes16/17/18...
-    renamedSys = {"trig":"muonTrig","iso":"muonIso","id":"muonID","sf":"btagSFAK4_","lumi":"lumi"}
+    dropSys = ["jer","jes","jms","jmr","ptRwt"]
+    renamedSys = {"trig":"leptonTrig","Id":"leptonID","sf":"btagSFAK4_"}
     for l in f.readlines():
-        if 'lnN' in l or 'shape' in l or 'rateParam' in l or "rpf" in l:
+        #if 'lnN' in l or 'shape' in l or 'rateParam' in l or "rpf" in l:
+        if 'lnN' in l or 'shape' in l:
             syst_name = l.split(' ')[0]
             if(syst_name in dropSys):
                 continue
             if(syst_name in renamedSys.keys()):
                 if(year=="RunII"):
-                    #systs.append(renamedSys[syst_name]+"16")
+                    systs.append(renamedSys[syst_name]+"16")
                     systs.append(renamedSys[syst_name]+"17")
                     systs.append(renamedSys[syst_name]+"18")
                 else:
                     systs.append(renamedSys[syst_name]+year)
                 continue
-            if syst_name != 'shapes': systs.append(syst_name.rstrip())
+            if syst_name != 'shapes' and syst_name not in systs: systs.append(syst_name.rstrip())
     return systs
 
 from optparse import OptionParser
@@ -84,10 +85,10 @@ with header.cd(projDir):
         # Build a post-fit workspace
         #header.executeCmd('text2workspace.py -b '+cardName+' -o impactworkspace.root')
         header.setSnapshot()
-        initialfit_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -15 --rMax 15 -d initialFitWorkspace.root --snapshotName initialFit --doInitialFit --cminDefaultMinimizerStrategy 0 -m 2000 '+impactNuisanceString
+        initialfit_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -10 --rMax 10 -d initialFitWorkspace.root --snapshotName initialFit --doInitialFit --cminDefaultMinimizerStrategy 0 -m 2000  '+impactNuisanceString
         print(initialfit_cmd)
         header.executeCmd(initialfit_cmd)
-        impact_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -15 --rMax 15 -d initialFitWorkspace.root --snapshotName initialFit --doFits --cminDefaultMinimizerStrategy 0 -m 2000 '+impactNuisanceString
+        impact_cmd = 'combineTool.py -M Impacts -n '+taskName+' --rMin -10 --rMax 10  -d initialFitWorkspace.root --snapshotName initialFit --doFits --cminDefaultMinimizerStrategy 0 -m 2000  '+impactNuisanceString
         if options.condor:
             JOB_PREFIX = """#!/bin/bash
 source /cvmfs/cms.cern.ch/cmsset_default.sh
@@ -117,9 +118,9 @@ cd %s
 
     elif options.post:
         # Grab the output
-        print('combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit -m 2000 '+impactNuisanceString+' -o impacts.json')
+        print('combineTool.py -M Impacts -n '+taskName+' --rMin -10 --rMax 10 -d initialFitWorkspace.root --snapshotName initialFit -m 2000  '+impactNuisanceString+' -o impacts.json')
         print('plotImpacts.py -i impacts.json -o impacts')
-        header.executeCmd('combineTool.py -M Impacts -n '+taskName+' --rMin -5 --rMax 5 -d initialFitWorkspace.root --snapshotName initialFit -m 2000 '+impactNuisanceString+' -o impacts.json')
+        header.executeCmd('combineTool.py -M Impacts -n '+taskName+' --rMin -10 --rMax 10 -d initialFitWorkspace.root --snapshotName initialFit -m 2000  '+impactNuisanceString+' -o impacts.json')
         header.executeCmd('plotImpacts.py -i impacts.json -o impacts')
 
     # # Run commands
