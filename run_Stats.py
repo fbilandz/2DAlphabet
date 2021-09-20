@@ -143,10 +143,7 @@ with header.cd(projDir):
 
     if options.freezeFail:
         #freeze_string = ' --freezeParameters "var{Fail_.*}"'
-        #freeze_string = ' --freezeParameters Fail_bin_10-1_NAL_L_2018,Fail_bin_12-2_NAL_L_2018,Fail_bin_13-3_NAL_L_2018,Fail_bin_13-5_NAL_L_2017'
-        freeze_string = ' --freezeParameters rgx{.+Other.+}'
-
-    #else: freeze_string = ''
+        freeze_string = ' --freezeParameters Fail_bin_12-2_TT,MCRpfUncT'
     else: freeze_string = ''
 
     # Make a prefit workspace from the data card
@@ -193,6 +190,7 @@ with header.cd(projDir):
         'seed':seed
     }
     gen_command = 'combine -M GenerateOnly'+mask_string.replace('=1','=0')+' -d initialFitWorkspace.root --snapshotName initialFit --toysFrequentist --bypassFrequentistFit -t '+str(ntoys)+' --saveToys -s '+str(seed)+' --expectSignal '+expectSignal+' -n '+gen_name+freeze_string
+    #gen_command = 'combine -M GenerateOnly'+mask_string.replace('=1','=0')+' -d morphedWorkspace.root --toysFrequentist --bypassFrequentistFit -t '+str(ntoys)+' --saveToys -s '+str(seed)+' --expectSignal '+expectSignal+' -n '+gen_name+freeze_string
 
     if not options.post and not options.plotOnly and not options.skipSnapshot: header.setSnapshot()
 
@@ -227,8 +225,8 @@ with header.cd(projDir):
 
             else:
                 # header.executeCmd(gen_command,options.dryrun)
-                header.executeCmd(gen_command)
-                header.executeCmd(gof_toy_cmd)
+                header.executeCmd(gen_command,options.dryrun)
+                header.executeCmd(gof_toy_cmd,options.dryrun)
 
         if not options.condor:
             if options.post:
@@ -331,6 +329,7 @@ with header.cd(projDir):
             ###########################################
             # fit_command = 'combine -M FitDiagnostics'+mask_string.replace('=1','=0')+' -d initialFitWorkspace.root --snapshotName initialFit --toysFrequentist --skipBOnlyFit -t '+str(ntoys)+ ' --toysFile higgsCombine'+gen_name+'.GenerateOnly.mH120.'+str(seed)+'.root --rMin '+options.rMin+' --rMax '+options.rMax+' -n '+run_name
             fit_command = 'combine -M FitDiagnostics'+mask_string.replace('=1','=0')+' -d initialFitWorkspace.root --snapshotName initialFit --skipBOnlyFit --cminDefaultMinimizerStrategy 0 -t '+str(ntoys)+ ' --toysFile higgsCombine'+gen_name+'.GenerateOnly.mH120.'+str(seed)+'.root --rMin '+options.rMin+' --rMax '+options.rMax+' -n '+run_name+freeze_string
+            #fit_command = 'combine -M FitDiagnostics'+mask_string.replace('=1','=0')+' -d morphedWorkspace.root --skipBOnlyFit --cminDefaultMinimizerStrategy 0 -t '+str(ntoys)+ ' --toysFile higgsCombine'+gen_name+'.GenerateOnly.mH120.'+str(seed)+'.root --rMin '+options.rMin+' --rMax '+options.rMax+' -n '+run_name+freeze_string
             if options.condor == True:
                 tar_files = ['run_Stats.py',
                              'TwoDAlphabetClass.py',
@@ -338,9 +337,13 @@ with header.cd(projDir):
                              'RpfHandler.py',
                              # projDir+'/'+workspace_name,
                              projDir+'/'+'initialFitWorkspace.root']
+                             #projDir+'/'+'morphedWorkspace.root']
 
                 this_gen_command = gen_command.replace('-d initialFitWorkspace.root','-d '+projDir+'/initialFitWorkspace.root')
                 this_fit_command = fit_command.replace('-d initialFitWorkspace.root','-d '+projDir+'/initialFitWorkspace.root')
+
+                # this_gen_command = gen_command.replace('-d morphedWorkspace.root','-d '+projDir+'/morphedWorkspace.root')
+                # this_fit_command = fit_command.replace('-d morphedWorkspace.root','-d '+projDir+'/morphedWorkspace.root')
 
                 header.StatsForCondor(run_name,toy_dict,tar_files,[this_gen_command,this_fit_command])
 
@@ -557,6 +560,7 @@ if options.biasStudy !='' or options.ftest:
             # Do some basic checks before wasting compute time
             base_nrpf_params, base_nbins = header.ftestInfoLookup(header.projInfoLookup(projDir,card_tag))
             alt_nrpf_params, alt_nbins = header.ftestInfoLookup(header.projInfoLookup(altDir,altcard_tag))
+
             base_fit_filename = 'higgsCombineFTest.GoodnessOfFit.mH120.root'
             toy_fit_filename_alt = 'higgsCombine'+run_name+'.GoodnessOfFit.mH120.'+ftestseed+'.root'
             toy_fit_filename_main = 'higgsCombineFTestToyFits.GoodnessOfFit.mH120.'+ftestseed+'.root'
@@ -566,12 +570,12 @@ if options.biasStudy !='' or options.ftest:
                 with header.cd(projDir+'/condor_'+run_name):
                     header.executeCmd('mkdir tmp/')
                     header.executeCmd('tar -xzvf '+run_name+'.tgz -C tmp/')
-                header.executeCmd('mv '+projDir+'/condor_'+run_name+'/'+toy_fit_filename_main+' '+projDir+'/')
+                header.executeCmd('mv '+projDir+'/condor_'+run_name+'/tmp/'+toy_fit_filename_main+' '+projDir+'/')
 
                 with header.cd(altDir+'/condor_'+run_name):
                     header.executeCmd('mkdir tmp/')
                     header.executeCmd('tar -xzvf '+run_name+'.tgz -C tmp/')
-                header.executeCmd('mv '+altDir+'/condor_'+run_name+'/'+toy_fit_filename_alt+' '+altDir+'/')
+                header.executeCmd('mv '+altDir+'/condor_'+run_name+'/tmp/'+toy_fit_filename_alt+' '+altDir+'/')
 
             # If the number of bins in the two models doesn't match, specify which to use or quit
             if base_nbins != alt_nbins:
@@ -599,7 +603,7 @@ if options.biasStudy !='' or options.ftest:
             fdist.SetParameter(2,ftest_nbins-ftest_p2)
 
             if options.ftest == 'pvalue':
-                pval = fdist.Integral(0.0,base_fstat[0])
+                pval = 1.0-fdist.Integral(0.0,base_fstat[0])
                 print 'P-value: %s'%pval
                 pval_file = open('ftest_pval_'+projDir+'_vs_'+altDir+'.txt','w')
                 pval_file.write(str(pval))
@@ -657,8 +661,22 @@ if options.biasStudy !='' or options.ftest:
 
                 # c.cd()
                 model_info = TPaveText(0.2,0.6,0.4,0.8,"brNDC")
-                model_info.AddText('p1 = '+projDir.split('pol')[1][0:4])
-                model_info.AddText('p2 = '+altDir.split('pol')[1][0:4])
+                # model_info.AddText('p1 = '+projDir.split('pol')[1][0:4])
+                # model_info.AddText('p2 = '+altDir.split('pol')[1][0:4])
+                #Matej hack
+                #-------------
+                mainFitPoly = "11"
+                if("12" in altDir):
+                    altFitPoly = "12"
+                if("21" in altDir):
+                    altFitPoly = "21"
+                # mainFitPoly = projDir.split("NAL_")[-1].replace("_CR","")
+                # altFitPoly  = altDir.split("NAL_")[-1].replace("_CR","")
+                #print(projDir,altDir)
+                #print(mainFitPoly,altFitPoly)
+                #-------------
+                model_info.AddText('p1 = '+mainFitPoly)
+                model_info.AddText('p2 = '+altFitPoly)
                 model_info.AddText("p-value = %.2f"%(pval))
                 model_info.Draw('same')
                 
@@ -755,8 +773,11 @@ if options.biasStudy !='' or options.ftest:
 
                 # c.cd()
                 model_info = TPaveText(0.2,0.6,0.4,0.8,"brNDC")
-                model_info.AddText('p1 = '+projDir.split('pol')[1][0:4])
-                model_info.AddText('p2 = '+altDir.split('pol')[1][0:4])
+                print(projDir)
+                # model_info.AddText('p1 = '+projDir.split('pol')[1][0:4])
+                # model_info.AddText('p2 = '+altDir.split('pol')[1][0:4])
+                model_info.AddText('p1 = '+projDir.split('NAL_')[1][0:2])
+                model_info.AddText('p2 = '+altDir.split('NAL_')[1][0:2])
                 model_info.Draw('same')
                 
                 latex = TLatex()
