@@ -2,6 +2,7 @@ import ROOT as r
 import numpy as np
 from time import sleep
 from QuadraticFit import *
+from LinearFit import *
 from QubicFit import *
 
 r.gROOT.SetBatch(True)
@@ -34,7 +35,7 @@ def rebinHisto(hNameToRebin,hModel,inFile,name):
     return hRes
 
 
-def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,binsY=22,yLo=800,yUp=3000):
+def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=33,xLo=60,xUp=720,binsY=34,yLo=800,yUp=4200):
     #hModel   = r.TH2F("hModel","",len(customMJYbins)-1,customMJYbins,len(customMJJbins)-1,customMJJbins)
     hModel   = r.TH2F("hModel","",binsX,xLo,xUp,binsY,yLo,yUp)
 
@@ -51,9 +52,11 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     hFail1D = hFail.ProjectionX("QCD_mJY_mJJ_{0}_nom".format(tag_fail))
     hPass1D = hPass.ProjectionX("QCD_mJY_mJJ_{0}_nom".format(tag_pass))
 
-    #customMJYbins = np.array([60.,80.,100.,120.,140.,160.,180.,200.,220.,240.,260.,300.,360.],dtype='float64')
-    customMJYbins = np.array([60.,80.,100.,120.,160.,200.,240.,300.,360.],dtype='float64')
-    customMJYbins = np.array([60.,80.,100.,120.,160.,220.,280.,360.],dtype='float64')#for data-driven Rpf
+    #customMJYbins = np.array([60.,80.,100.,120.,160.,220.,280.,360.],dtype='float64')#for data-driven Rpf
+    if("AL_L" in tag_pass or "LL" in tag_pass): 
+        customMJYbins = np.array([60.,80.,100.,120.,160.,220.,280.,640.],dtype='float64')#for data-driven Rpf
+    else:
+        customMJYbins = np.array([60.,80.,100.,140.,200.,260.,640.],dtype='float64')#for data-driven Rpf
 
 
     customMJJbins = np.linspace(yLo,yUp,num=binsY+1,endpoint=True,dtype='float64')
@@ -70,11 +73,12 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
 
     #TFitResult class
     #fitRes = hRatio1D.Fit("f2","S")
-    #q = QuadraticFit([0.00211473, 0.00279319, 0.00933092], 60, 360, "quadfit", "EMRFNEX0")
-    q = QubicFit([0.002, 0.0, 0.0,0.0], 60, 360, "qubicfit", "EMRFNEX0")
+    #q = LinearFit([0.00211473, 0.0], 60, 640, "linfit", "EMRFNEX0")
+    q = QuadraticFit([0.00211473, 0.00279319, 0.00933092], 60, 640, "quadfit", "EMRFNEX0")
+    #q = QubicFit([0.002, 0.0, 0.0,0.0], 60, 640, "qubicfit", "EMRFNEX0")
     fitRes = hRatio1D.Fit(q.fit,"S")
     chi2   = fitRes.Chi2()/fitRes.Ndf()
-    print(fitRes.Chi2()/fitRes.Ndf())
+    #print(fitRes.Chi2()/fitRes.Ndf())
     q.Converter(fitRes)
     fitfun = q.fit
     errup = q.ErrUp
@@ -92,13 +96,16 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     errup.Draw("lsame")
     errdown.Draw("lsame")
     c.SaveAs(outputFile.replace(".root",".pdf"))
+    c.SaveAs(outputFile.replace(".root",".png"))
 
 
 
     rpf_2D = hModel.Clone("rpf_{0}_{1}".format(tag_fail,tag_pass))
     rpf_2D_up = hModel.Clone("rpf_{0}_{1}_up".format(tag_fail,tag_pass))
     rpf_2D_down = hModel.Clone("rpf_{0}_{1}_down".format(tag_fail,tag_pass))
+    unit_2D     = hModel.Clone("unit_histo_{0}".format(tag_fail,tag_pass))
     for i in range(1,rpf_2D.GetNbinsX()+1):
+        failSafeFlag = False
         for j in range(1,rpf_2D.GetNbinsY()+1):
             xVal    = rpf_2D.GetXaxis().GetBinCenter(i)
             rpf_val = fitfun.Eval(xVal)
@@ -110,9 +117,19 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
                 rpf_up=0.001
             if(rpf_down<0.0001):
                 rpf_down=0.0001
+            if((4.1*(rpf_val-rpf_down))>rpf_val):
+            #ensure that the rpf_down variation is 4.1sigma away from 0
+            #combine usually limits nuisances to [-4,4]
+                failSafeFlag = True
+                rpf_down_orig = rpf_down
+                rpf_down = rpf_val-rpf_val/4.1
             rpf_2D.SetBinContent(i,j,rpf_val)
             rpf_2D_up.SetBinContent(i,j,rpf_up)
             rpf_2D_down.SetBinContent(i,j,rpf_down)
+            unit_2D.SetBinContent(i,j,1.0)
+        #if(failSafeFlag):
+            #print("Changed rpf for MJY={0}: {1} -> {2}".format(xVal,rpf_down_orig,(rpf_val-rpf_val/4.1)))
+        #print(xVal,rpf_val,rpf_down)
 
     hPassFromFail = hFail.Clone("QCD_PassFromFail_{0}".format(tag_pass))
     hPassFromFailUp = hFail.Clone("QCD_PassFromFail_{0}_up".format(tag_pass))
@@ -129,6 +146,7 @@ def get1DRpf(inputFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60,xUp=360,bins
     rpf_2D.Write()
     rpf_2D_up.Write()
     rpf_2D_down.Write()
+    unit_2D.Write()
     hPassFromFail.Write()
     hPassFromFailUp.Write()
     hPassFromFailDown.Write()
@@ -208,66 +226,17 @@ def applyFuncToTT(inputFile,fitFile,outputFile,tag_pass,tag_fail,binsX=15,xLo=60
     output.Close()
 
 
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_NAL_L.root","NAL_L","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_NAL_T.root","NAL_T","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_WAL_L.root","WAL_L","WAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/QCD.root","templates/WP_0.94_0.98/2016/QCD1DRpf_WAL_T.root","WAL_T","WAL_AL")
-
-# get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_L.root","WAL_L","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_T.root","WAL_T","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_LplusT.root","WAL_L","WAL_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_WAL_T.root","WAL_T","WAL_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_WAL_L.root","WAL_L","WAL_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_LL.root","LL","L_AL")
+# get1DRpf("templates/WP_0.94_0.98/RunII/dataMinusTTbar.root","templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_TT.root","TT","T_AL")
 
 
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_NAL_L.root","NAL_L","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_NAL_T.root","NAL_T","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_WAL_L.root","WAL_L","WAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/QCD.root","templates/WP_0.94_0.98/2017/QCD1DRpf_WAL_T.root","WAL_T","WAL_AL")
-
-# get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_WAL_L.root","WAL_L","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_WAL_T.root","WAL_T","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_WAL_LplusT.root","WAL_L","WAL_AL")
-
-
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_NAL_L.root","NAL_L","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_NAL_T.root","NAL_T","NAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_WAL_L.root","WAL_L","WAL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/QCD.root","templates/WP_0.94_0.98/2018/QCD1DRpf_WAL_T.root","WAL_T","WAL_AL")
-
-# get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_AL_T.root","AL_T","AL_AL")
-get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_WAL_L.root","WAL_L","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_WAL_T.root","WAL_T","WAL_AL")
-get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_WAL_LplusT.root","WAL_L","WAL_AL")
-
-
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_NAL_L.root","NAL_L","NAL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_NAL_T.root","NAL_T","NAL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_WAL_L.root","WAL_L","WAL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_WAL_T.root","WAL_T","WAL_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_LL.root","LL","L_AL")
-# get1DRpf("templates/RunII/QCD.root","templates/RunII/QCD1DRpf_TT.root","TT","T_AL")
-
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_AL_L.root","AL_L","AL_AL")
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_AL_T.root","AL_T","AL_AL")
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_WAL_L.root","WAL_L","WAL_AL")
-# get1DRpf("templates/RunII/dataMinusTTbar.root","templates/RunII/DataMinusTT1DRpf_WAL_T.root","WAL_T","WAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016_Rpf/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2016/dataMinusTTbar.root","templates/WP_0.94_0.98/2016_Rpf/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017_Rpf/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2017/dataMinusTTbar.root","templates/WP_0.94_0.98/2017_Rpf/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018_Rpf/DataMinusTT1DRpf_NAL_T.root","NAL_T","NAL_AL")
+get1DRpf("templates/WP_0.94_0.98/2018/dataMinusTTbar.root","templates/WP_0.94_0.98/2018_Rpf/DataMinusTT1DRpf_NAL_L.root","NAL_L","NAL_AL")
