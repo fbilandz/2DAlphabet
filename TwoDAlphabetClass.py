@@ -1031,10 +1031,17 @@ class TwoDAlphabet:
                     if this_syst_dict['CODE'] == 2:   # same file as norm, different hist names
                         #Matej's fix to use 16/17/18 templates in the same .json
                         #Avoids me having to rename TTbar_ templates to 16_TTbar_*
-                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',process))
-                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',process))
-                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',process))
-                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',process))
+                        tempProcessName = process.replace("16_","")
+                        tempProcessName = tempProcessName.replace("17_","")
+                        tempProcessName = tempProcessName.replace("18_","")
+                        dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',tempProcessName))
+                        dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',tempProcessName))
+                        dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',tempProcessName))
+                        dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',tempProcessName))
+                        # dict_hists[process]['pass'][pass_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTPASS_UP'].replace('*',process))
+                        # dict_hists[process]['pass'][pass_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTPASS_DOWN'].replace('*',process))
+                        # dict_hists[process]['fail'][fail_syst+'Up']   = file_nominal.Get(this_syst_dict['HISTFAIL_UP'].replace('*',process))
+                        # dict_hists[process]['fail'][fail_syst+'Down'] = file_nominal.Get(this_syst_dict['HISTFAIL_DOWN'].replace('*',process))
 
                     if this_syst_dict['CODE'] == 3:   # different file as norm and different files for each process if specified, same hist name if not specified in inputConfig
                         # User will most likely have different file for each process but maybe not so check
@@ -1740,11 +1747,13 @@ class TwoDAlphabet:
         if fittag == 's':
             tree_fit_sb = fd_file.Get('tree_fit_sb')
             tree_fit_sb.GetEntry(0)
-            signal_strength = tree_fit_sb.r
+            signal_strength = 1.0
+            #signal_strength = tree_fit_sb.r
         else:
             tree_fit_b = fd_file.Get('tree_fit_b')
             tree_fit_b.GetEntry(0)
             signal_strength = tree_fit_b.r
+            signal_strength = 1.0
 
         #####################
         #    Data vs Bkg    #
