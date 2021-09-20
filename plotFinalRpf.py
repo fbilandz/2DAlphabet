@@ -128,15 +128,47 @@ def plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail
     # #r.gPad.SetPhi(210)
     # r.gPad.Update()
 
-
-#plotRpfs(MCfitFile,dataFitFile,TTbarFile,dataFile,outputFile,tagPass,tagFail,zMax=0.1):
-#plotRpfs("templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_L.root","2016_NAL_L_CR/NAL_L_2016/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2016/TTbar16.root","templates/WP_0.94_0.98/2016/JetHT16.root","RpfPlots/2016_NAL_L_Rpfs.png","NAL_L","NAL_AL",0.02)
-# plotRpfs("templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_WAL_L.root","2017_NAL_L_CR/NAL_L_2017/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2017/TTbar17.root","templates/WP_0.94_0.98/2017/JetHT17.root","RpfPlots/2017_NAL_L_Rpfs.png","NAL_L","NAL_AL",0.02)
-# plotRpfs("templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_WAL_L.root","2018_NAL_L_CR/NAL_L_2018/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2018/TTbar18.root","templates/WP_0.94_0.98/2018/JetHT18.root","RpfPlots/2018_NAL_L_Rpfs.png","NAL_L","NAL_AL",0.02)
-
-# plotRpfs("templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_T.root","2016_NAL_T_CR/NAL_T_2016/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2016/TTbar16.root","templates/WP_0.94_0.98/2016/JetHT16.root","RpfPlots/2016_NAL_T_Rpfs.png","NAL_T","NAL_AL",0.02)
-# plotRpfs("templates/WP_0.94_0.98/2017/DataMinusTT1DRpf_WAL_T.root","2017_NAL_T_CR/NAL_T_2017/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2017/TTbar17.root","templates/WP_0.94_0.98/2017/JetHT17.root","RpfPlots/2017_NAL_T_Rpfs.png","NAL_T","NAL_AL",0.02)
-# plotRpfs("templates/WP_0.94_0.98/2018/DataMinusTT1DRpf_WAL_T.root","2018_NAL_T_CR/NAL_T_2018/plots/postfit_rpf_fitb.root","templates/WP_0.94_0.98/2018/TTbar18.root","templates/WP_0.94_0.98/2018/JetHT18.root","RpfPlots/2018_NAL_T_Rpfs.png","NAL_T","NAL_AL",0.02)
+def plotRpf(rpfFitFile,dataFitFile,outputFile,tagPass,tagFail,zMax=0.1):
+    rrpf_f = r.TFile.Open(dataFitFile)
+    rrpf   = rrpf_f.Get("rpf_final")#RRpf actually!
+    rrpf.SetName("RRpf")
+    rrpf.SetTitle("RRatio")
 
 
-plotRpfs("templates/WP_0.94_0.98/2016/DataMinusTT1DRpf_WAL_T.root","2016_NAL_CR/NAL_T_2016/plots/postfit_rpf_fits.root","templates/WP_0.94_0.98/2016/TTbar16.root","templates/WP_0.94_0.98/2016/JetHT16.root","RpfPlots/2016_NAL_T_Rpfs.png","NAL_T","NAL_AL",0.02)
+    rpfFit_f = r.TFile.Open(rpfFitFile)
+    rpf_mc   = rpfFit_f.Get("rpf_{0}_{1}".format(tagFail,tagPass))
+    rpf_mc.SetTitle("1D DD Rpf")
+    rpf_mc = rebin2DHisto(rpf_mc,rrpf,"rpf_mc_rebinned")
+    rpf_unit_hist = rpfFit_f.Get("unit_histo_{0}".format(tagFail))
+    rpf_unit_hist = rebin2DHisto(rpf_unit_hist,rrpf,"rpf_mc_rebinned")
+    rpf_mc.Divide(rpf_unit_hist)
+
+    finalRpf = rrpf.Clone("Rpf_final")
+    finalRpf.Multiply(rpf_mc)
+    finalRpf.SetZTitle("R_{P/F}^{data}")
+
+    finalRpf.SetTitle("1D Rpf x RRatio")
+
+    c = r.TCanvas("","",3000,2000)
+    c.SetMargin(0.15,0.15,0.15,0.15)
+    c.cd()
+    finalRpf.SetTitle("RRatio x 1D Rpf")
+    finalRpf.SetTitleOffset(1.7,"X")
+    finalRpf.SetTitleOffset(1.7,"Y")
+    finalRpf.SetTitleOffset(1.7,"Z")
+    #finalRpf.GetZaxis().SetRangeUser(0.,zMax)
+    finalRpf.Draw("surf")
+    c.SaveAs(outputFile.replace(".png","_surf.png"))
+
+    c.Clear()
+    finalRpf.Draw("colz")
+    c.SaveAs(outputFile.replace(".png","_colz.png"))
+    c.Close()
+
+
+
+# plotRpf("templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_WAL_L.root","RunII_NAL_11_CR/NAL_L/plots/postfit_rpf_fitb.root","RpfPlots/NAL_L_rpf.png","WAL_L","WAL_AL")
+# plotRpf("templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_WAL_T.root","RunII_NAL_11_CR/NAL_T/plots/postfit_rpf_fitb.root","RpfPlots/NAL_T_rpf.png","WAL_T","WAL_AL")
+
+plotRpf("templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_NAL_L.root","RunII_SR_data_12_CR/LL/plots/postfit_rpf_fitb.root","RpfPlots/LL_rpf.png","NAL_L","NAL_AL")
+plotRpf("templates/WP_0.94_0.98/RunII/DataMinusTT1DRpf_NAL_T.root","RunII_SR_data_12_CR/TT/plots/postfit_rpf_fitb.root","RpfPlots/TT_rpf.png","NAL_T","NAL_AL")
