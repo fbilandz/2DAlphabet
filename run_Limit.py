@@ -48,18 +48,19 @@ def runLimit(twoDs,postfitWorkspaceDir,blindData=True,freezeFail=False,location=
     with header.cd(projDir):
         #Combine the CR datacard with the SR
         writeCmds = """
-        echo 'bqqT_16       rateParam *TT_2016 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqqL_16       rateParam *LL_2016 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqT_16        rateParam *TT_2016 TTbar_bq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqL_16        rateParam *LL_2016 TTbar_bq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqqT_17       rateParam *TT_2017 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqqL_17       rateParam *LL_2017 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqT_17        rateParam *TT_2017 TTbar_bq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqL_17        rateParam *LL_2017 TTbar_bq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqqT_18       rateParam *TT_2018 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqqL_18       rateParam *LL_2018 TTbar_bqq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqT_18        rateParam *TT_2018 TTbar_bq 1.0 [0.0,5.0]' >> {0}
-        echo 'bqL_18        rateParam *LL_2018 TTbar_bq 1.0 [0.0,5.0]' >> {0}""".format(card_name)
+        echo 'bqqT_16       rateParam *TT 16_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_16       rateParam *LL 16_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_16        rateParam *TT 16_TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_16        rateParam *LL 16_TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqT_17       rateParam *TT 17_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_17       rateParam *LL 17_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_17        rateParam *TT 17_TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_17        rateParam *LL 17_TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqT_18       rateParam *TT 18_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqqL_18       rateParam *LL 18_TTbar_bqq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqT_18        rateParam *TT 18_TTbar_bq 1.0 [0.0,5.0]' >> {0}
+        echo 'bqL_18        rateParam *LL 18_TTbar_bq 1.0 [0.0,5.0]' >> {0}""".format(card_name)
+
         for writeCmd in writeCmds.split("\n"):
             header.executeCmd(writeCmd)
 
@@ -67,7 +68,8 @@ def runLimit(twoDs,postfitWorkspaceDir,blindData=True,freezeFail=False,location=
 
         header.executeCmd(cpCmd)
 
-        cardCmd = "combineCards.py ch1={0} CR_L_17=CR_L_17.txt CR_T_17=CR_T_17.txt CR_L_18=CR_L_18.txt CR_T_18=CR_T_18.txt> combinedCard.txt".format(card_name)
+        cardCmd = "combineCards.py ch1={0} CR_L_16=CR_L_16.txt CR_T_16=CR_T_16.txt CR_L_17=CR_L_17.txt CR_T_17=CR_T_17.txt CR_L_18=CR_L_18.txt CR_T_18=CR_T_18.txt> combinedCard.txt".format(card_name)
+        #cardCmd = "combineCards.py ch1={0} CR_L_17=CR_L_17.txt CR_T_17=CR_T_17.txt CR_L_18=CR_L_18.txt CR_T_18=CR_T_18.txt> combinedCard.txt".format(card_name)
         header.executeCmd(cardCmd)
         sedCmd = "sed -i -e 's/\(ch1_\|ch1=\|T_CR\|L_CR\)//g' combinedCard.txt"
         header.executeCmd(sedCmd)
@@ -119,7 +121,7 @@ def runLimit(twoDs,postfitWorkspaceDir,blindData=True,freezeFail=False,location=
     print 'Getting current dir'
     current_dir = os.getcwd()
 
-    aL_cmd = 'combine -M AsymptoticLimits workspace.root --snapshotName initialFit --saveWorkspace --cminDefaultMinimizerStrategy 0 ' +blind_option + syst_option # + sig_option 
+    aL_cmd = 'combine -M AsymptoticLimits workspace.root --saveWorkspace --cminDefaultMinimizerStrategy 0 ' +blind_option + syst_option # + sig_option 
 
     # Run combine if not on condor
     if location == 'local':    
