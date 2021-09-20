@@ -6,7 +6,8 @@ import ROOT as rt
 #   Updated by:   Dinko Ferencek (Rutgers)
 #
 
-cmsText     = "CMS";
+#cmsText     = "CMS WiP";
+cmsText     = "CMS Preliminary";
 cmsTextFont   = 61  
 
 writeExtraText = True
@@ -25,8 +26,8 @@ relExtraDY = 1.2
 
 extraOverCmsTextSize  = 0.76
 
-lumi_13TeV = "137 fb^{-1}"
-lumi_2016_13TeV = "35.9 fb^{-1}"
+lumi_13TeV = "138 fb^{-1}"
+lumi_2016_13TeV = "36.3 fb^{-1}"
 lumi_2017_13TeV = "41.5 fb^{-1}"
 lumi_2018_13TeV = "60 fb^{-1}"
 lumi_8TeV  = "19.7 fb^{-1}" 
