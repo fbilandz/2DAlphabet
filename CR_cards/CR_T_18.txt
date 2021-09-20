@@ -15,17 +15,17 @@ bin		T_CR	T_CR	T_CR
 process		TTbar_bqq	TTbar_bq	Other	
 process		1	2	3	
 rate		-1	-1	-1	
-lumi	lnN	1.025	1.025	1.025	
-pdfrewt	lnN	1.01	1.01	1.01	
+lumi	lnN	1.016	1.016	1.016	
 jer	shape	1.0	1.0	1.0	
 jes	shape	1.0	1.0	1.0	
-jms	shape	1.0	1.0	1.0	
+jms	shape	1.0	1.0	-	
 jmr	shape	1.0	1.0	1.0	
 Id	shape	1.0	1.0	1.0	
 trig	shape	1.0	1.0	1.0	
 sf	shape	1.0	1.0	1.0	
 puRwt	shape	1.0	1.0	1.0	
 ptRwt	shape	1.0	1.0	-
+jms	shape	1.0	1.0	-
 
 bqqT_18 rateParam T_CR TTbar_bqq 1.0 [0.0,5.0]
 bqT_18 rateParam T_CR TTbar_bq 1.0 [0.0,5.0]
@@ -33,14 +33,12 @@ bqT_18 rateParam T_CR TTbar_bq 1.0 [0.0,5.0]
 
 nuisance edit rename TTbar_bqq T_CR jms jmsAK8_bqq18
 nuisance edit rename TTbar_bq T_CR jms jmsAK8_bq18
-nuisance edit rename Other T_CR jms jmsAK8_Other18
 nuisance edit rename * T_CR jmr jmrAK818
 nuisance edit rename * T_CR Id leptonID18
-nuisance edit rename * T_CR trig muonTrig18
+nuisance edit rename * T_CR trig leptonTrig18
 nuisance edit rename * T_CR sf btagSFAK4_18
 nuisance edit rename * T_CR jes jes18
 nuisance edit rename * T_CR jer jer18
-nuisance edit rename * T_CR lumi lumi18
 nuisance edit rename * T_CR ptRwt topPtRwt
 
 * autoMCStats 10000 1 1
