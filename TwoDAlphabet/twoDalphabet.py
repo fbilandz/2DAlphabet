@@ -264,16 +264,15 @@ class TwoDAlphabet:
         else: # systematic variation so need to be careful
             this_rname = False
             for rname in self.ledger.GetRegions():
-                if rname in hname:
+                if "_"+rname+"_" in hname:
                     this_rname = rname
                     break
 
             if not this_rname: raise RuntimeError('Could not find a region name from %s in "%s"'%(self.ledger.GetRegions(),hname))
 
-            start_idx = hname.index(this_rname)+len(this_rname)+1 #+1 for the trailing underscore
+            start_idx = hname.index("_"+this_rname+"_")+len("_"+this_rname+"_")
             end_idx = hname.index('_',start_idx)
             out = hname[start_idx:end_idx]
-        
         return out
 
 # ---------- FIRST STEP CONSTRUCTION ------ #
@@ -290,7 +289,7 @@ class TwoDAlphabet:
             cat = self._getCatNameRobust(hname)
             if cat == 'FULL':
                 continue
-            
+
             binningName = self.organizedHists.BinningLookup(hname.replace(cat,'FULL'))
 
             print ('Making RooDataHist... %s'%hname)
