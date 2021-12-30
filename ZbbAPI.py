@@ -9,7 +9,7 @@ import os
 def _get_other_region_names(pass_reg_name):
     return pass_reg_name, pass_reg_name.replace('pass','loose'),pass_reg_name.replace('pass','fail')
 
-def _select_signal(row, args):
+def _select_bkg(row, args):
     '''Used by the Ledger.select() method to create a subset of a Ledger.
     This function provides the logic to determine which entries/rows of the Ledger
     to keep for the subset. The first argument should always be the row to process.
@@ -38,8 +38,8 @@ def _select_signal(row, args):
     poly_order = args[0]
     if row.process_type == 'SIGNAL':
         return True
-    elif 'Background_' in row.process:
-        if row.process == 'Background_'+poly_order:
+    elif 'qcd_' in row.process:
+        if row.process == 'qcd_'+poly_order:
             return True
         else:
             return False
@@ -61,9 +61,9 @@ def _generate_constraints(nparams):
     out = {}
     for i in range(nparams):
         if i == 0:
-            out[i] = {"MIN":0,"MAX":1}
+            out[i] = {"MIN":0,"MAX":10,"NOM":1}
         else:
-            out[i] = {"MIN":-5,"MAX":5}
+            out[i] = {"MIN":-20,"MAX":20,"NOM":0}
     return out
 
 
@@ -125,7 +125,7 @@ def test_make():
     # First we make a BinnedDistribution which is a collection of RooRealVars built from a starting
     # histogram (`qcd_hists[f]`). These can be set to be constants but, if not, they become free floating
     # parameters in the fit.
-    fail_name = 'Background_F'
+    fail_name = 'qcd_fail'
     qcd_f = BinnedDistribution(
                 fail_name, qcd_hists["F"],
                 binning_f, constant=False
@@ -139,7 +139,7 @@ def test_make():
     # We specify the name of the process, the region it lives in, and the object itself.
     # The process is assumed to be a background and colored yellow but this can be changed
     # with optional arguments.
-    twoD.AddAlphaObj('Background',"F",qcd_f)
+    twoD.AddAlphaObj('qcd',"F",qcd_f)
 
     # As a global variables, we've defined some different transfer function (TF) options.
     # We only want to include one of these at the time of fitting but we want to construct
@@ -183,27 +183,26 @@ def test_make():
         # Note that we have unique process names so they are identifiable
         # but we give them different titles so that they look pretty in
         # the final plot legends.
-        twoD.AddAlphaObj('Background_'+opt_name,"L",qcd_l,title='Background')
-        twoD.AddAlphaObj('Background_'+opt_name,"T",qcd_t,title='Background')
+        twoD.AddAlphaObj('qcd_'+opt_name,"L",qcd_l,title='qcd')
+        twoD.AddAlphaObj('qcd_'+opt_name,"T",qcd_t,title='qcd')
 
     # Save() will save the RooWorkspace and the ledgers and other associated pieces
     # so the twoD object can be reconstructed later. If this line doesn't run or
     # if something in the above needs to change, everything will need to be re-run to this point.
     twoD.Save()
 
-def test_fit(SRorCR):
+def test_fit():
     '''Loads a TwoDAlphabet object from an existing project area, selects
     a subset of objects to run over (a specific signal and TF), makes a sub-directory
     to store the information, and runs the fit in that sub-directory. To make clear
     when a directory/area is being specified vs when a signal is being selected,
     I've redundantly prepended the "subtag" argument with "_area".
     '''
-    assert SRorCR == 'CR' # Setup for either SR or CR but don't want to unblind accidentally until ready
-
     # So that the find-replace in the config doesn't need to be done again if I want
     # the SR (since it would have been performed already by test_make()), I grab
     # the runConfig.json that's already been saved in the created directory.
-    working_area = 'XHYfits_'+SRorCR
+    working_area = 'Zbbfit'
+    polyOrder    = "1x2"
     twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
     # Access the Ledger and perform a selection on it to create a subset
     # from which to build the card. One can modify the Ledger DataFrames
@@ -215,7 +214,7 @@ def test_fit(SRorCR):
     # The select() method takes as a function as its first argument
     # and any args to pass to that function as the remiaining arguments
     # to select(). See _select_signal for how to construct the function.
-    subset = twoD.ledger.select(_select_signal, 'MX_2000_MY_800', '0x0')
+    subset = twoD.ledger.select(_select_bkg, polyOrder)
 
     # Make card reads the ledger and creates a Combine card from it.
     # The second argument specifices the sub-directory to save the card in.
@@ -226,12 +225,12 @@ def test_fit(SRorCR):
     # workspace is desired. Additionally, a different dataset can be supplied via
     # toyData but this requires supplying almost the full Combine card line and
     # is reserved for quick hacks by those who are familiar with Combine cards.
-    twoD.MakeCard(subset, 'MX_2000_MY_800_area')
+    twoD.MakeCard(subset, '{0}_area'.format(polyOrder))
 
     # Run the fit! Will run in the area specified by the `subtag` (ie. sub-directory) argument
     # and use the card in that area. Via the cardOrW argument, a different card or workspace can be
     # supplied (passed to the -d option of Combine).
-    twoD.MLfit('MX_2000_MY_800_area',rMin=-1,rMax=20,verbosity=0)
+    twoD.MLfit('{0}_area'.format(polyOrder),verbosity=0)
 
 def test_plot(SRorCR):
     '''Load the twoD object again and run standard plots for a specific subtag.
@@ -436,8 +435,7 @@ if __name__ == '__main__':
     #make_env_tarball()
 
     test_make()
-
-    #test_fit('CR')
+    test_fit()
     #test_plot('CR')
 
     # test_limit('SR')

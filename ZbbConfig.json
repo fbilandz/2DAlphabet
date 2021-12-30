@@ -284,8 +284,8 @@
       }
    },
    "OPTIONS":{
-      "blindedPlots":false,
-      "blindedFit":false,
+      "blindedPlots":[],
+      "blindedFit":[],
       "plotPrefitSigInFitB":false,
       "plotUncerts":true,
       "plotTitles":false,
