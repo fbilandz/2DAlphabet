@@ -380,13 +380,13 @@ def make_env_tarball(makeEnv=True):
     dir_base = os.environ['CMSSW_BASE']
     cmssw = dir_base.split('/')[-1]
     user = os.environ['USER']
-    out_eos_path = 'root://cmseos.fnal.gov//store/user/{user}/{cmssw}_env.tgz'.format(user=user,cmssw=cmssw)
+    out_eos_path = 'root://eoscms.cern.ch//eos/cms/store/group/phys_b2g/{user}/{cmssw}_env.tgz'.format(user=user,cmssw=cmssw)
     if makeEnv:
         with cd(dir_base+'/../'):
             if os.path.exists('%s_env.tgz'%cmssw):
                 execute_cmd('rm %s_env.tgz'%cmssw)
             print ('Making env tarball %s_env.tgz...'%cmssw)
-            execute_cmd('tar --exclude-caches-all --exclude-vcs --exclude-caches-all --exclude-vcs -czf {cmssw}_env.tgz {cmssw} --exclude=tmp --exclude=".scram" --exclude=".SCRAM"'.format(cmssw=cmssw))
+            execute_cmd('tar --exclude-caches-all --exclude-vcs --exclude-caches-all --exclude-vcs -czf {cmssw}_env.tgz {cmssw} --exclude=tmp --exclude 2DAlphabet_old --exclude Zbbfi* --exclude=".scram" --exclude=".SCRAM"'.format(cmssw=cmssw))
             print ('Done')
             execute_cmd('xrdcp {cmssw}_env.tgz {out}'.format(cmssw=cmssw,out=out_eos_path))
     
