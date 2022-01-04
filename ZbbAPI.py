@@ -5,6 +5,11 @@ from TwoDAlphabet.alphawrap import BinnedDistribution, ParametricFunction
 from TwoDAlphabet.helpers import make_env_tarball
 import os
 
+
+working_area = 'Zbbfit'
+polyOrder    = "1x2"
+
+
 '''--------------------------Helper functions---------------------------'''
 def _get_other_region_names(pass_reg_name):
     return pass_reg_name, pass_reg_name.replace('pass','loose'),pass_reg_name.replace('pass','fail')
@@ -68,10 +73,6 @@ def _generate_constraints(nparams):
 
 
 # we are working in a 2D space, so linear in X, linear in Y just change the shape of the transfer function
-#       0x0 - transfer function just looks like a flat plane (scales bkg up/down)
-#       1x0 - transfer function linear in X (think of a ramp increasing in X dir)
-#       0x1 - transfer function linear in Y (think of a ramp increasing in Y dir)
-#       1x1 - transfer function linear in both X and Y (kind of weird saddle-y shape)
 _rpf_options = {
     '0x0': {
         'form': '0.002*(@0)',
@@ -112,7 +113,7 @@ def test_make():
     # is also saved as runConfig.json. This means, if you want to share your analysis with
     # someone, they can grab everything they need from this one spot - no need to have access to
     # the original files! (Note though that you'd have to change the config to point to organized_hists.root).
-    twoD = TwoDAlphabet('Zbbfit', 'ZbbConfig.json', loadPrevious=False)
+    twoD = TwoDAlphabet(working_area, '/afs/cern.ch/work/m/mrogulji/UL_X_YH/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/configs/2016/ZbbConfig.json', loadPrevious=False)
     qcd_hists = twoD.InitQCDHists() # Create the data - BKGs histograms
 
 
@@ -201,8 +202,6 @@ def test_fit():
     # So that the find-replace in the config doesn't need to be done again if I want
     # the SR (since it would have been performed already by test_make()), I grab
     # the runConfig.json that's already been saved in the created directory.
-    working_area = 'Zbbfit'
-    polyOrder    = "1x2"
     twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
     # Access the Ledger and perform a selection on it to create a subset
     # from which to build the card. One can modify the Ledger DataFrames
@@ -232,74 +231,29 @@ def test_fit():
     # supplied (passed to the -d option of Combine).
     twoD.MLfit('{0}_area'.format(polyOrder),verbosity=0)
 
-def test_plot(SRorCR):
+def test_plot():
     '''Load the twoD object again and run standard plots for a specific subtag.
     Assumes loading the Ledger in this sub-directory but a different one can
     be provided if desired.
     '''
-    assert SRorCR == 'CR' # Setup for either SR or CR but don't want to unblind accidentally until ready
-    working_area = 'XHYfits_'+SRorCR
     twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
-    subset = twoD.ledger.select(_select_signal, 'MX_2000_MY_800', '0x0')
-    twoD.StdPlots('MX_2000_MY_800_area', subset)
+    subset = twoD.ledger.select(_select_bkg, polyOrder)
+    twoD.StdPlots('{0}_area'.format(polyOrder), subset)
 
-def test_limit(SRorCR):
-    '''Perform a blinded limit. To be blinded, the Combine algorithm (via option `--run blind`)
-    will create an Asimov toy dataset from the pre-fit model. Since the TF parameters are meaningless
-    in our true "pre-fit", we need to load in the parameter values from a different fit so we have
-    something reasonable to create the Asimov toy.
-    '''
-    poly_order = '0x0'
-    # Returns a dictionary of the TF parameters with the names as keys and the post-fit values as dict values.
-    params_to_set = _load_CR_rpf_as_SR(poly_order) if SRorCR == 'SR' else _load_CR_rpf()
-    working_area = 'XHYfits_'+SRorCR
-    twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
-
-    # The iterWorkspaceObjs attribute stores the key-value pairs in the JSON config
-    # where the value is a list. This allows for later access like here so the user
-    # can loop over the list values without worrying if the config has changed over time
-    # (necessitating remembering that it changed and having to hard-code the list here).
-    print ('Possible signals: %s'%twoD.iterWorkspaceObjs['SIGNAME'])
-    for signame in twoD.iterWorkspaceObjs['SIGNAME']:
-        # signame is going too look like <what we want>_18 so drop the last three characters
-        signame = signame[:-3]
-        print ('Performing limit for %s'%signame)
-
-        # Make a subset and card as in test_fit()
-        subset = twoD.ledger.select(_select_signal, signame, poly_order)
-        twoD.MakeCard(subset, signame+'_area')
-        # Run the blinded limit with our dictionary of TF parameters
-        twoD.Limit(
-            subtag=signame+'_area',
-            blindData=True,
-            verbosity=0,
-            setParams=params_to_set,
-            condor=False
-        )
-
-def test_GoF(SRorCR):
+def test_GoF():
     '''Perform a Goodness of Fit test using an existing working area.
     Requires using data so SRorCR is enforced to be 'CR' to avoid accidental unblinding.
     '''
-    assert SRorCR == 'CR' # Setup for either SR or CR but don't want to unblind accidentally until ready
 
-    poly_order = '0x0'
-    working_area = 'XHYfits_'+SRorCR
     twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
-
-    # If the card doesn't exist, make it (in the case that test_fit() wasn't run first).
-    signame = 'MX_2000_MY_800'
-    if not os.path.exists(twoD.tag+'/'+signame+'_area/card.txt'):
-        subset = twoD.ledger.select(_select_signal, signame, poly_order)
-        twoD.MakeCard(subset, signame+'_area')
-    # Run the Goodness of fit test with 500 toys, r frozen to 0, TF parameters set to prefit.
+    # Run the Goodness of fit test with 500 toys, r floating, TF parameters set to prefit.
     # This method always runs the evaluation on data interactively but the toy generation and evaluation
     # can be sent to condor with condor=True and split over several jobs with njobs=<int>.
     # Note that running a GoF test without data is relatively meaningless so by using this method,
     # you must unblind data. If you wish to use a toy dataset instead, you should set that
     # up when making the card.
     twoD.GoodnessOfFit(
-        signame+'_area', ntoys=500, freezeSignal=0,
+        '{0}_area'.format(polyOrder), ntoys=500, freezeSignal=False,
         condor=True, njobs=10
     )
 
@@ -330,9 +284,8 @@ def test_SigInj(SRorCR):
         setParams=_load_CR_rpf_as_SR(poly_order),
         condor=True, njobs=10)
 
-def test_GoF_plot(SRorCR):
-    '''Plot the GoF in XHYfits_<SRorCR>/MX_2000_MY_800_area (condor=True indicates that condor jobs need to be unpacked)'''
-    plot.plot_gof('XHYfits_'+SRorCR,'MX_2000_MY_800_area', condor=True)
+def test_GoF_plot():
+    plot.plot_gof(working_area,'{0}_area'.format(polyOrder), condor=True)
 
 def test_SigInj_plot(SRorCR):
     '''Plot the signal injection test for r=0 injected and stored in XHYfits_<SRorCR>/MX_2000_MY_800_area
@@ -434,13 +387,14 @@ if __name__ == '__main__':
     # This only needs to be run once unless you fundamentally change your working environment.
     #make_env_tarball()
 
-    test_make()
-    test_fit()
-    #test_plot('CR')
+    #test_make()
+    #test_fit()
+    test_plot()
+    #test_GoF()
+    #test_GoF_plot()
 
     # test_limit('SR')
 
-    # test_GoF('CR')
     # test_SigInj('SR')
 
     #test_Impacts('SR')
