@@ -2,13 +2,9 @@ from time import time
 from TwoDAlphabet import plot
 from TwoDAlphabet.twoDalphabet import MakeCard, TwoDAlphabet
 from TwoDAlphabet.alphawrap import BinnedDistribution, ParametricFunction
-from TwoDAlphabet.helpers import make_env_tarball
+from TwoDAlphabet.helpers import make_env_tarball, cd, execute_cmd
+from TwoDAlphabet.ftest import FstatCalc
 import os
-
-
-working_area = 'Zbbfit'
-polyOrder    = "1x2"
-
 
 '''--------------------------Helper functions---------------------------'''
 def _get_other_region_names(pass_reg_name):
@@ -72,6 +68,21 @@ def _generate_constraints(nparams):
     return out
 
 
+def _gof_for_FTest(twoD, subtag, card_or_w='card.txt'):
+
+    run_dir = twoD.tag+'/'+subtag
+    
+    with cd(run_dir):
+        gof_data_cmd = [
+            'combine -M GoodnessOfFit',
+            '-d '+card_or_w,
+            '--algo=saturated',
+            '-n _gof_data'
+        ]
+
+        gof_data_cmd = ' '.join(gof_data_cmd)
+        execute_cmd(gof_data_cmd)
+
 # we are working in a 2D space, so linear in X, linear in Y just change the shape of the transfer function
 _rpf_options = {
     '0x0': {
@@ -97,6 +108,18 @@ _rpf_options = {
     '2x1': {
         'form': '0.002*(@0+@1*x+@2*x*x)*(1+@3*y)',
         'constraints': _generate_constraints(4)
+    },
+    '2x2': {
+        'form': '0.002*(@0+@1*x+@2*x*x)*(1+@3*y+@4*y*y)',
+        'constraints': _generate_constraints(5)
+    },
+    '2x3': {
+        'form': '0.002*(@0+@1*x+@2*x*x)*(1+@3*y+@4*y*y+@5*y*y*y)',
+        'constraints': _generate_constraints(6)
+    },
+    '3x2': {
+        'form': '0.002*(@0+@1*x+@2*x*x+@3*x*x*x)*(1+@4*y+@5*y*y)',
+        'constraints': _generate_constraints(6)
     }
 }
 
@@ -382,24 +405,126 @@ def test_generate_for_SR():
     # Plot!
     twoD.StdPlots('MX_2000_MY_800_toyArea2',ledger=subset)
 
+
+def test_FTest(poly1,poly2):
+    '''Perform an F-test using existing working areas.
+    '''
+
+    twoD    = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
+
+    binning = twoD.binnings["default"]
+    nBins   = (len(binning.xbinList)-1)*(len(binning.ybinList)-1)
+
+    #Get number of RPF params and run GoF for poly1
+    params1 = twoD.ledger.select(_select_bkg, poly1).alphaParams
+    rpfSet1 = params1[params1["name"].str.contains("rpf")]
+    nRpfs1  = len(rpfSet1.index)
+    _gof_for_FTest(twoD, "{0}_area".format(poly1), card_or_w='card.txt')
+    gofFile1= working_area+"/{0}_area/higgsCombine_gof_data.GoodnessOfFit.mH120.root".format(poly1)
+
+    #Get number of RPF params and run GoF for poly2
+    params2 = twoD.ledger.select(_select_bkg, poly2).alphaParams
+    rpfSet2 = params2[params2["name"].str.contains("rpf")]
+    nRpfs2  = len(rpfSet2.index)
+    _gof_for_FTest(twoD, "{0}_area".format(poly2), card_or_w='card.txt')
+    gofFile2= working_area+"/{0}_area/higgsCombine_gof_data.GoodnessOfFit.mH120.root".format(poly2)
+
+    base_fstat = FstatCalc(gofFile1,gofFile2,nRpfs1,nRpfs2,nBins)
+    print(base_fstat)
+
+    def plot_FTest(base_fstat,nRpfs1,nRpfs2,nBins):
+        from ROOT import TF1, TH1F, TLegend, TPaveText, TLatex, TArrow, TCanvas, kBlue, gStyle
+        gStyle.SetOptStat(0000)
+
+        if len(base_fstat) == 0: base_fstat = [0.0]
+
+        ftest_p1    = min(nRpfs1,nRpfs2)
+        ftest_p2    = max(nRpfs1,nRpfs2)
+        ftest_nbins = nBins
+        fdist       = TF1("fDist", "[0]*TMath::FDist(x, [1], [2])", 0,max(10,1.3*base_fstat[0]))
+        fdist.SetParameter(0,1)
+        fdist.SetParameter(1,ftest_p2-ftest_p1)
+        fdist.SetParameter(2,ftest_nbins-ftest_p2)
+
+        pval = fdist.Integral(0.0,base_fstat[0])
+        print 'P-value: %s'%pval
+
+        c = TCanvas('c','c',800,600)    
+        c.SetLeftMargin(0.12) 
+        c.SetBottomMargin(0.12)
+        c.SetRightMargin(0.1)
+        c.SetTopMargin(0.1)
+        ftestHist_nbins = 30
+        ftestHist = TH1F("Fhist","",ftestHist_nbins,0,max(10,1.3*base_fstat[0]))
+        ftestHist.GetXaxis().SetTitle("F = #frac{-2log(#lambda_{1}/#lambda_{2})/(p_{2}-p_{1})}{-2log#lambda_{2}/(n-p_{2})}")
+        ftestHist.GetXaxis().SetTitleSize(0.025)
+        ftestHist.GetXaxis().SetTitleOffset(2)
+        ftestHist.GetYaxis().SetTitleOffset(0.85)
+        
+        ftestHist.Draw("pez")
+        ftestobs  = TArrow(base_fstat[0],0.25,base_fstat[0],0)
+        ftestobs.SetLineColor(kBlue+1)
+        ftestobs.SetLineWidth(2)
+        fdist.Draw('same')
+
+        ftestobs.Draw()
+        tLeg = TLegend(0.6,0.73,0.89,0.89)
+        tLeg.SetLineWidth(0)
+        tLeg.SetFillStyle(0)
+        tLeg.SetTextFont(42)
+        tLeg.SetTextSize(0.03)
+        tLeg.AddEntry(ftestobs,"observed = %.3f"%base_fstat[0],"l")
+        tLeg.AddEntry(fdist,"F-dist, ndf = (%.0f, %.0f) "%(fdist.GetParameter(1),fdist.GetParameter(2)),"l")
+        tLeg.Draw("same")
+
+        model_info = TPaveText(0.2,0.6,0.4,0.8,"brNDC")
+        model_info.AddText('p1 = '+poly1)
+        model_info.AddText('p2 = '+poly2)
+        model_info.AddText("p-value = %.2f"%(1-pval))
+        model_info.Draw('same')
+        
+        latex = TLatex()
+        latex.SetTextAlign(11)
+        latex.SetTextSize(0.06)
+        latex.SetTextFont(62)
+        latex.SetNDC()
+        latex.DrawLatex(0.12,0.91,"CMS")
+        latex.SetTextSize(0.05)
+        latex.SetTextFont(52)
+        latex.DrawLatex(0.65,0.91,"Preliminary")
+        latex.SetTextFont(42)
+        latex.SetTextFont(52)
+        latex.SetTextSize(0.045)
+        c.SaveAs(working_area+'/ftest_{0}_vs_{1}_notoys.png'.format(poly1,poly2))
+
+    plot_FTest(base_fstat,nRpfs1,nRpfs2,nBins)
+
 if __name__ == '__main__':
     # Provided for convenience is this function which will package the current CMSSW and store it on the user's EOS (assumes FNAL).
     # This only needs to be run once unless you fundamentally change your working environment.
     #make_env_tarball()
 
-    #test_make()
-    #test_fit()
+    working_area = 'Zbbfit'
+    test_make()
+
+    for order in ["0x0","0x1","1x0","1x1","1x2","2x1","2x2"]:
+    for order in ["2x3","3x2"]:
+        polyOrder = order
+        test_fit()
+    
+
+    test_FTest("0x0","0x1")
+    test_FTest("0x0","1x0")
+    test_FTest("0x1","1x1")
+    test_FTest("1x0","1x1")
+    test_FTest("1x1","1x2")
+    test_FTest("1x1","2x1")
+    test_FTest("1x2","2x2")
+    test_FTest("2x1","2x2")
+    test_FTest("2x2","3x2")
+    test_FTest("2x2","2x3")
+
+    polyOrder    = "2x2"
     test_plot()
-    #test_GoF()
+    test_GoF()
     #test_GoF_plot()
-
-    # test_limit('SR')
-
-    # test_SigInj('SR')
-
-    #test_Impacts('SR')
-    # test_generate_for_SR()
-
-    # Run after condor jobs finish
-    # test_GoF_plot('CR')
-    # test_SigInj_plot('SR')
