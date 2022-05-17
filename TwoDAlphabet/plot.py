@@ -110,6 +110,8 @@ class Plotter(object):
         shapes_file = ROOT.TFile.Open('postfitshapes_%s.root'%self.fittag)
         loc_base = '{r}_{c}_{t}/{p}'
 
+        proc_reg_pairs = self.ledger.GetProcRegPairs()+[('TotalBkg', r) for r in self.ledger.GetRegions()]
+
         for region in self.ledger.GetRegions():
             binning,_ = self.twoD.GetBinningFor(region)
             if len(self.twoD.options.blindedPlots) > 0:
@@ -122,6 +124,10 @@ class Plotter(object):
             self.slices['y'][region] = {'vals': binning.ySlices,'idxs':binning.ySliceIdx}
             
             for process in self.ledger.GetProcesses()+['TotalBkg']:
+                # Skip processes not in this region
+                if process not in [pair[0] for pair in proc_reg_pairs if pair[1] == region]:
+                    continue
+                
                 if process != 'TotalBkg':
                     color = self.ledger.GetProcessColor(process)
                     proc_type = self.ledger.GetProcessType(process)
@@ -139,17 +145,22 @@ class Plotter(object):
                 for time in ['prefit','postfit']:
                     # 2D distributions first
                     out2d_name = '%s_%s_%s_2D'%(process,region,time)
-                    low  = shapes_file.Get(loc_base.format(r=region, c='LOW', t=time, p=process))
-                    sig  = shapes_file.Get(loc_base.format(r=region, c='SIG', t=time, p=process))
-                    high = shapes_file.Get(loc_base.format(r=region, c='HIGH',t=time, p=process))
 
-                    if low == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(loc_base.format(r=region, c='LOW', t=time, p=process),self.fittag))
-                    if sig == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(loc_base.format(r=region, c='SIG', t=time, p=process),self.fittag))
-                    if high == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(loc_base.format(r=region, c='HIGH', t=time, p=process),self.fittag))
+                    low_name = loc_base.format(r=region, c='LOW', t=time, p=process)
+                    sig_name = loc_base.format(r=region, c='SIG', t=time, p=process)
+                    high_name = loc_base.format(r=region, c='HIGH',t=time, p=process)
+                    
+                    low  = shapes_file.Get(low_name)
+                    sig  = shapes_file.Get(sig_name)
+                    high = shapes_file.Get(high_name)
+
+                    if low == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(low_name, self.fittag))
+                    if sig == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(sig_name, self.fittag))
+                    if high == None: raise IOError('Could not find histogram %s in postfitshapes_%s.root'%(high_name, self.fittag))
 
                     full = stitch_hists_in_x(out2d_name, binning, [low,sig,high], blinded=blinding if process == 'data_obs' else [])
                     full.SetMinimum(0)
-                    full.SetTitle('%s, %s, %s'%(process,region,time))
+                    full.SetTitle('%s, %s, %s'%(proc_title,region,time))
 
                     self.root_out.WriteTObject(full,full.GetName())
 
@@ -216,7 +227,7 @@ class Plotter(object):
             process_order = proclist
 
         process_order_df = pandas.DataFrame({'process':process_order})
-        return process_order_df.merge(df,on='process',how='outer')
+        return process_order_df.merge(df,on='process',how='inner')
 
     def plot_2D_distributions(self):
         '''Take the saved 2D distributions and plot them together on sub-pads
@@ -742,7 +753,7 @@ def gen_projections(ledger, twoD, fittag):
     plotter.plot_pre_vs_post()
     # plotter.plot_transfer_funcs()
 
-def make_systematic_plots(configObj):
+def make_systematic_plots(twoD):
     '''Make plots of the systematic shape variations of each process based on those
     processes and systematic shapes specified in the config. Shapes are presented 
     as projections onto 1D axis where no selection has been made on the axis not
@@ -750,21 +761,25 @@ def make_systematic_plots(configObj):
     '''
     c = ROOT.TCanvas('c','c',800,700)
 
-    for pair, group in configObj.df.groupby(['process','region']):
-        p,r = pair
-        nominal_full = configObj.organizedHists.Get(process=p,region=r,systematic='')
-        binning = configObj.organizedHists.BinningLookup(nominal_full.GetName())
+    for (p,r), _ in twoD.df.groupby(['process','region']):
+        if p == 'data_obs': continue
+
+        nominal_full = twoD.organizedHists.Get(process=p,region=r,systematic='')
+        binning, _ = twoD.GetBinningFor(r)
+
         for axis in ['X','Y']:
             nominal = getattr(nominal_full,'Projection'+axis)('%s_%s_%s_%s'%(p,r,'nom','proj'+axis))
-            for s, _ in group.loc[group.variation.ne('nominal')].groupby('variation'):
-                up = getattr(configObj.organizedHists.Get(process=p,region=r,systematic=s+'Up'),'Projection'+axis)('%s_%s_%s_%s'%(p,r,s+'Up','proj'+axis))
-                down = getattr(configObj.organizedHists.Get(process=p,region=r,systematic=s+'Down'),'Projection'+axis)('%s_%s_%s_%s'%(p,r,s+'Down','proj'+axis))
+            for s in twoD.ledger.GetShapeSystematics(drop_norms=True):
+                up = getattr(twoD.organizedHists.Get(process=p,region=r,systematic=s+'Up'),'Projection'+axis)('%s_%s_%s_%s'%(p,r,s+'Up','proj'+axis))
+                down = getattr(twoD.organizedHists.Get(process=p,region=r,systematic=s+'Down'),'Projection'+axis)('%s_%s_%s_%s'%(p,r,s+'Down','proj'+axis))
 
                 c.cd()
                 nominal.SetLineColor(ROOT.kBlack)
                 nominal.SetFillColor(ROOT.kYellow-9)
                 up.SetLineColor(ROOT.kRed)
+                up.SetFillColorAlpha(ROOT.kWhite, 0)
                 down.SetLineColor(ROOT.kBlue)
+                down.SetFillColorAlpha(ROOT.kWhite, 0)
 
                 up.SetLineStyle(9)
                 down.SetLineStyle(9)
@@ -783,7 +798,7 @@ def make_systematic_plots(configObj):
                 up.Draw('same hist')
                 down.Draw('same hist')
 
-                c.Print(configObj.projPath+'/UncertPlots/Uncertainty_%s_%s_%s_%s.png'%(p,r,s,'proj'+axis),'png')
+                c.Print(twoD.tag+'/UncertPlots/Uncertainty_%s_%s_%s_%s.png'%(p,r,s,'proj'+axis),'png')
 
 def _make_pull_plot(data, bkg):
     pull = data.Clone(data.GetName()+"_pull")

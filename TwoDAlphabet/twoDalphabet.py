@@ -628,10 +628,10 @@ class Ledger():
             else:           to_add = df[df.process_type.eq(ptype)].process.unique()
             proc_list.extend( list(to_add) )
 
-        if includeNonConfig and self.alphaObjs.title.unique().size > 0:
+        if includeNonConfig and self.alphaObjs.process.unique().size > 0:
             df = self.alphaObjs
-            if ptype == '': to_add = df.title.unique()
-            else:           to_add = df[df.process_type.eq(ptype)].title.unique()
+            if ptype == '': to_add = df.process.unique()
+            else:           to_add = df[df.process_type.eq(ptype)].process.unique()
             proc_list.extend( list(to_add) )
 
         return proc_list
@@ -639,8 +639,12 @@ class Ledger():
     def GetProcRegPairs(self):
         return [g[0] for g in self.df.groupby(['process','region'])]+[g[0] for g in self.alphaObjs.groupby(['process','region'])]
 
-    def GetShapeSystematics(self):
-        systs = self.df.variation.unique()
+    def GetShapeSystematics(self, drop_norms=False):
+        if drop_norms:
+            systs = self.df.loc[self.df.syst_type.eq('shapes')]
+        else:
+            systs = self.df
+        systs = systs.variation.unique()
         systs = numpy.delete(systs, numpy.where(systs == 'nominal'))
         return systs.tolist()
 
@@ -679,11 +683,11 @@ class Ledger():
 
     @property
     def nsignals(self):
-        return self.df[self.df.process_type.eq('SIGNAL')].process.nunique() + self.alphaObjs[self.alphaObjs.process_type.eq('SIGNAL')].title.nunique()
+        return self.df[self.df.process_type.eq('SIGNAL')].process.nunique() + self.alphaObjs[self.alphaObjs.process_type.eq('SIGNAL')].process.nunique()
 
     @property
     def nbkgs(self):
-        return self.df[self.df.process_type.eq('BKG')].process.nunique() + self.alphaObjs[self.alphaObjs.process_type.eq('BKG')].title.nunique()
+        return self.df[self.df.process_type.eq('BKG')].process.nunique() + self.alphaObjs[self.alphaObjs.process_type.eq('BKG')].process.nunique()
 
     def _checkAgainstConfig(self, process, region):
         if (process,region) in self.GetProcRegPairs():
@@ -692,8 +696,8 @@ class Ledger():
             raise RuntimeError('Attempting to track an object for region "%s" but that region does not exist among those defined in the config:\n\t%s'%(region,self.GetRegions()))
 
     def _getCombineIdxMap(self):
-        all_signals = self.df[self.df.process_type.eq('SIGNAL')].process.unique().tolist() + self.alphaObjs[self.alphaObjs.process_type.eq('SIGNAL')].title.unique().tolist()
-        all_bkgs    = self.df[self.df.process_type.eq('BKG')].process.unique().tolist()    + self.alphaObjs[self.alphaObjs.process_type.eq('BKG')].title.unique().tolist()
+        all_signals = self.df[self.df.process_type.eq('SIGNAL')].process.unique().tolist() + self.alphaObjs[self.alphaObjs.process_type.eq('SIGNAL')].process.unique().tolist()
+        all_bkgs    = self.df[self.df.process_type.eq('BKG')].process.unique().tolist()    + self.alphaObjs[self.alphaObjs.process_type.eq('BKG')].process.unique().tolist()
 
         signal_map = pandas.DataFrame({'process': all_signals, 'combine_idx': [-1*i for i in range(0,len(all_signals))] })
         bkg_map    = pandas.DataFrame({'process': all_bkgs,    'combine_idx': [i for i in range(1,len(all_bkgs)+1)] })
@@ -717,10 +721,10 @@ class Ledger():
         self._saveAlphas(outDir)
 
 def LoadLedger(indir=''):
-    df = pandas.read_csv(indir+'ledger_df.csv')
+    df = pandas.read_csv(indir+'ledger_df.csv', index_col=0)
     ledger = Ledger(df)
-    ledger.alphaObjs = pandas.read_csv(indir+'ledger_alphaObjs.csv')
-    ledger.alphaParams = pandas.read_csv(indir+'ledger_alphaParams.csv')
+    ledger.alphaObjs = pandas.read_csv(indir+'ledger_alphaObjs.csv', index_col=0)
+    ledger.alphaParams = pandas.read_csv(indir+'ledger_alphaParams.csv', index_col=0)
 
     return ledger
 
@@ -761,8 +765,8 @@ def MakeCard(ledger, subtag, workspaceDir):
             if proc in ledger.alphaObjs.process.unique():
                 this_line = shape_line.replace(' w:{p}_{r}_$SYSTEMATIC','').replace('w:{p}','w:{hname_proc}')
                 title = ledger.alphaObjs[ledger.alphaObjs.process.eq(proc) & ledger.alphaObjs.region.eq(reg)].title.iloc[0]
-                alpha_obj_title_map[(proc,reg)] = title
-                card_new.write(this_line.format(p=title, r=reg+'_'+cat, file=workspaceDir+'base.root', hname_proc=proc))
+                alpha_obj_title_map[(proc,reg)] = proc
+                card_new.write(this_line.format(p=proc, r=reg+'_'+cat, file=workspaceDir+'base.root', hname_proc=proc))
             elif proc == 'data_obs':
                 this_line = shape_line.replace(' w:{p}_{r}_$SYSTEMATIC','')
                 card_new.write(this_line.format(p=proc, r=reg+'_'+cat, file=workspaceDir+'base.root'))
