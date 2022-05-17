@@ -263,6 +263,7 @@ class ParametricFunction(Generic2D):
         f = f.replace('-x','-%s'%x).replace('-y','-%s'%y)
         f = f.replace('/x','/%s'%x).replace('/y','/%s'%y)
         f = f.replace('(x','(%s'%x).replace('(y','(%s'%y)
+        f = f.replace(',x',',%s'%x).replace(',y',',%s'%y)
         return f
 
     def getNparams(self):

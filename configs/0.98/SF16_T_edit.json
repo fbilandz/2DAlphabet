@@ -17,10 +17,10 @@
             "jes",
             "jer",
             "jms0",
-            "jms1",
-            "jms2",
             "jmr0",
+            "jms1",
             "jmr1",
+            "jms2",
             "jmr2",
             "prefiring16",
             "puRwt",
@@ -40,16 +40,17 @@
             "jes",
             "jer",
             "jms0",
-            "jms1",
-            "jms2",
             "jmr0",
+            "jms1",
             "jmr1",
+            "jms2",
             "jmr2",
             "prefiring16",
             "puRwt",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
+            "d3K_NLO",
             "d1kappa_EW",
             "W_d2kappa_EW",
             "W_d3kappa_EW"
@@ -67,18 +68,16 @@
             "jes",
             "jer",
             "jms0",
-            "jms1",
-            "jms2",
             "jmr0",
+            "jms1",
             "jmr1",
+            "jms2",
             "jmr2",
             "prefiring16",
             "puRwt",
-            "pnet",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
-            "d3K_NLO",
             "d1kappa_EW",
             "Z_d2kappa_EW",
             "Z_d3kappa_EW"
@@ -91,25 +90,15 @@
       }
    },
    "REGIONS":{
-      "T":{
+      "pass":{
          "PROCESSES":[
-            "TTbar",
             "WJets_c",
             "ZJets_bc"
          ],
          "BINNING":"default"
       },
-      "L":{
+      "fail":{
          "PROCESSES":[
-            "TTbar",
-            "WJets_c",
-            "ZJets_bc"
-         ],
-         "BINNING":"default"
-      },
-      "F":{
-         "PROCESSES":[
-            "TTbar",
             "WJets_c",
             "ZJets_bc"
          ],
@@ -122,8 +111,8 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/afs/cern.ch/work/m/mrogulji/UL_X_YH/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/2016",
-      "FILE":"masterTemplate16.root"
+      "path":"/afs/cern.ch/user/m/mrogulji/UL_X_YH/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/0.98",
+      "FILE":"templates16.root"
    },
    "BINNING":{
       "default":{
@@ -171,7 +160,7 @@
    "SYSTEMATICS":{
       "lumi":{
          "CODE":0,
-         "VAL":1.024
+         "VAL":1.012
       },
       "topxsec":{
          "CODE":1,
@@ -237,11 +226,6 @@
          "DOWN":"path/FILE:HIST_DOWN",
          "SIGMA":1.0
       },
-      "pnet":{
-         "UP":"path/FILE:HIST_ALT_UP",
-         "DOWN":"path/FILE:HIST_ALT_DOWN",
-         "SIGMA":1.0
-      },
       "jes":{
          "UP":"path/FILE:HIST_ALT_UP",
          "DOWN":"path/FILE:HIST_ALT_DOWN",
@@ -250,6 +234,16 @@
       "jer":{
          "UP":"path/FILE:HIST_ALT_UP",
          "DOWN":"path/FILE:HIST_ALT_DOWN",
+         "SIGMA":1.0
+      },
+      "jms":{
+         "UP":"path/FILE:$process_m_pT_$region_jmsUp",
+         "DOWN":"path/FILE:$process_m_pT_$region_jmsDown",
+         "SIGMA":1.0
+      },
+      "jmr":{
+         "UP":"path/FILE:$process_m_pT_$region_jmrUp",
+         "DOWN":"path/FILE:$process_m_pT_$region_jmrDown",
          "SIGMA":1.0
       },
       "jms0":{
