@@ -1,0 +1,4 @@
+hadd -f templates16.root ~/Zbb_SF/results/templates/0.94/2016/scaled/*16.root
+hadd -f templates16APV.root ~/Zbb_SF/results/templates/0.94/2016APV/scaled/*16APV.root
+hadd -f templates17.root ~/Zbb_SF/results/templates/0.94/2017/scaled/*17.root
+hadd -f templates18.root ~/Zbb_SF/results/templates/0.94/2018/scaled/*18.root
