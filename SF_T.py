@@ -360,25 +360,23 @@ if __name__ == '__main__':
     #make_env_tarball()
 
     bestOrder = {"SF16_T":"2","SF16APV_T":"3","SF17_T":"2","SF18_T":"2"}
-    #for working_area in ["SF16APV_T","SF16_T","SF17_T","SF18_T"]:
-    for working_area in ["SF16APV_T"]:
+    for working_area in ["SF16APV_T","SF16_T","SF17_T","SF18_T"]:
 
         jsonConfig   = '/users/mrogul/Work/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/configs/0.98/{0}.json'.format(working_area)
 
-        #test_make(jsonConfig)
+        test_make(jsonConfig)
 
         for order in ["1","2","3","4"]:
             polyOrder = order
-            #test_fit()
-            #if polyOrder=="2":
-            if polyOrder==bestOrder[working_area]:
+            test_fit()
+            #if polyOrder==bestOrder[working_area]:
             #    test_plot()
             #    test_GoF()
             #    test_GoF_plot()
-                test_Impacts()
+            #    test_Impacts()
 
 
 
-        # test_FTest("1","2")
-        # test_FTest("2","3")
-        # test_FTest("3","4")
+        test_FTest("1","2")
+        test_FTest("2","3")
+        test_FTest("3","4")

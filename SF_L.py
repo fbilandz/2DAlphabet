@@ -359,26 +359,25 @@ if __name__ == '__main__':
     # This only needs to be run once unless you fundamentally change your working environment.
     #make_env_tarball()
 
-    bestOrder = {"SF16_L":"2","SF16APV_L":"2","SF17_L":"2","SF18_L":"4"}#Fit in 18 used --cminDefaultMinimizerTolerance
+    bestOrder = {"SF16_L":"2","SF16APV_L":"2","SF17_L":"2","SF18_L":"4"}#Fit in 18 used --cminDefaultMinimizerTolerance, try freezing some correlated nuisances
     for working_area in ["SF16APV_L","SF16_L","SF17_L","SF18_L"]:
 
         jsonConfig   = '/users/mrogul/Work/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/configs/0.94/{0}.json'.format(working_area)
 
-        #test_make(jsonConfig)
+        test_make(jsonConfig)
 
         for order in ["1","2","3","4"]:
             polyOrder = order
-            #test_fit()
-            if polyOrder==bestOrder[working_area]:
+            test_fit()
             #if polyOrder==bestOrder[working_area]:
                 #test_fit()
             #    test_plot()
             #    test_GoF()
             #    test_GoF_plot()
-               test_Impacts()
+            #   test_Impacts()
 
 
 
-        # test_FTest("1","2")
-        # test_FTest("2","3")
-        # test_FTest("3","4")
+        test_FTest("1","2")
+        test_FTest("2","3")
+        test_FTest("3","4")
