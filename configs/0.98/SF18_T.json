@@ -16,13 +16,9 @@
             "lumi",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "puRwt",
+            "jms",
+            "jmr",
+            "puUnc",
             "topxsec",
             "trig"
          ],
@@ -35,16 +31,12 @@
       "WJets_c":{
          "SYSTEMATICS":[
             "lumi",
-            "pdf_unc",
+            "pdfUnc",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "puRwt",
+            "jms",
+            "jmr",
+            "puUnc",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
@@ -61,16 +53,12 @@
       "ZJets_bc":{
          "SYSTEMATICS":[
             "lumi",
-            "pdf_unc",
+            "pdfUnc",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "puRwt",
+            "jms",
+            "jmr",
+            "puUnc",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
@@ -108,7 +96,7 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/afs/cern.ch/user/m/mrogulji/UL_X_YH/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/0.98",
+      "path":"/users/mrogul/Work/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/0.98",
       "FILE":"templates18.root"
    },
    "BINNING":{
@@ -118,9 +106,7 @@
             "TITLE":"M_{SD} [GeV]",
             "BINS":[
                50,
-               55,
                60,
-               65,
                70,
                75,
                80,
@@ -164,16 +150,12 @@
          "VALUP":1.061,
          "VALDOWN":0.938
       },
-      "prefiring18":{
-         "CODE":0,
-         "VAL":1.02
-      },
-      "pdf_unc":{
+      "pdfUnc":{
          "UP":"path/FILE:HIST_UP",
          "DOWN":"path/FILE:HIST_DOWN",
          "SIGMA":1.0
       },
-      "puRwt":{
+      "puUnc":{
          "UP":"path/FILE:HIST_UP",
          "DOWN":"path/FILE:HIST_DOWN",
          "SIGMA":1.0

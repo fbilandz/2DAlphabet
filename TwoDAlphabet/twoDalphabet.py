@@ -331,8 +331,8 @@ class TwoDAlphabet:
                 threshold=0 # change this to reduce the size of the correlation matrix to only those variables with correlations above a threshold
             )
             plot.gen_post_fit_shapes()
-            plot.gen_projections(ledger, self, 'b')
-            plot.gen_projections(ledger, self, 's')
+            #plot.gen_projections(ledger, self, 'b')
+            #plot.gen_projections(ledger, self, 's')
             
     def GetParamsOnMatch(self, regex='', subtag='', b_or_s='b'):
         out = {}
@@ -424,7 +424,7 @@ class TwoDAlphabet:
         return masked_regions
 
     def GoodnessOfFit(self, subtag, ntoys, card_or_w='card.txt', freezeSignal=False, seed=123456,
-                            verbosity=0, extra='', condor=False, eosRootfiles=None, njobs=0):
+                            verbosity=0, extra='', condor=False, eosRootfiles=None, njobs=0,lorienTag=False):
         # NOTE: There's no way to blind data here - need to evaluate it to get the p-value
         # param_str = '' if setParams == {} else '--setParameters '+','.join(['%s=%s'%(p,v) for p,v in setParams.items()])
 
@@ -475,7 +475,8 @@ class TwoDAlphabet:
                     runIn=run_dir,
                     toGrab=run_dir+'/higgsCombine_gof_toys.GoodnessOfFit.mH120.*.root',
                     eosRootfileTarball=eosRootfiles,
-                    remakeEnv=False
+                    remakeEnv=False,
+                    lorienTag=lorienTag
                 )
                 condor.submit()
             
