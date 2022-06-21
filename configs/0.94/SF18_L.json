@@ -96,7 +96,7 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/users/mrogul/Work/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/0.94",
+      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/0.94",
       "FILE":"templates18.root"
    },
    "BINNING":{
