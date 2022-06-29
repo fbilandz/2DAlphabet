@@ -1,3 +1,4 @@
+```
 export SCRAM_ARCH=slc7_amd64_gcc700
 cmsrel CMSSW_10_6_14
 cd CMSSW_10_6_14/src
@@ -12,3 +13,4 @@ git checkout Zbb_v9
 cp TwoDAlphabet/ext/TagAndProbeExtended.py $CMSSW_BASE/src/HiggsAnalysis/CombinedLimit/python/
 cd ..
 scram b -j4
+```
