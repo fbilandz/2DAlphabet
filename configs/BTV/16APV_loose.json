@@ -16,14 +16,10 @@
             "lumi",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "prefiring17",
-            "puRwt",
+            "jms",
+            "jmr",
+            "prefiring16",
+            "puUnc",
             "topxsec",
             "trig"
          ],
@@ -36,21 +32,16 @@
       "WJets_c":{
          "SYSTEMATICS":[
             "lumi",
-            "pdf_unc",
+            "pdfUnc",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "prefiring17",
-            "puRwt",
+            "jms",
+            "jmr",
+            "prefiring16",
+            "puUnc",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
-            "d3K_NLO",
             "d1kappa_EW",
             "W_d2kappa_EW",
             "W_d3kappa_EW"
@@ -64,20 +55,17 @@
       "ZJets_bc":{
          "SYSTEMATICS":[
             "lumi",
-            "pdf_unc",
+            "pdfUnc",
             "jes",
             "jer",
-            "jms0",
-            "jmr0",
-            "jms1",
-            "jmr1",
-            "jms2",
-            "jmr2",
-            "prefiring17",
-            "puRwt",
+            "jms",
+            "jmr",
+            "prefiring16",
+            "puUnc",
             "trig",
             "d1K_NLO",
             "d2K_NLO",
+            "d3K_NLO",
             "d1kappa_EW",
             "Z_d2kappa_EW",
             "Z_d3kappa_EW"
@@ -111,8 +99,8 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/afs/cern.ch/user/m/mrogulji/UL_X_YH/Zbb_SF/CMSSW_10_6_14/src/2DAlphabet/templates/0.98",
-      "FILE":"templates17.root"
+      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/loose",
+      "FILE":"templates16APV.root"
    },
    "BINNING":{
       "default":{
@@ -121,9 +109,7 @@
             "TITLE":"M_{SD} [GeV]",
             "BINS":[
                50,
-               55,
                60,
-               65,
                70,
                75,
                80,
@@ -160,23 +146,25 @@
    "SYSTEMATICS":{
       "lumi":{
          "CODE":0,
-         "VAL":1.023
+         "VAL":1.012
       },
       "topxsec":{
          "CODE":1,
          "VALUP":1.061,
          "VALDOWN":0.938
       },
-      "prefiring17":{
-         "CODE":0,
-         "VAL":1.02
+      "prefiring16":{
+         "UP":"path/FILE:$process_m_pT_$region__prefireUnc_up",
+         "DOWN":"path/FILE:$process_m_pT_$region__prefireUnc_down",
+         "SIGMA":1.0
+
       },
-      "pdf_unc":{
+      "pdfUnc":{
          "UP":"path/FILE:HIST_UP",
          "DOWN":"path/FILE:HIST_DOWN",
          "SIGMA":1.0
       },
-      "puRwt":{
+      "puUnc":{
          "UP":"path/FILE:HIST_UP",
          "DOWN":"path/FILE:HIST_DOWN",
          "SIGMA":1.0
