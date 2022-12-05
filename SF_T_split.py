@@ -354,6 +354,19 @@ def test_FTest(poly1,poly2):
 
     plot_FTest(base_fstat,nRpfs1,nRpfs2,nBins)
 
+def test_mdimfit():
+    twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
+    subset = twoD.ledger.select(_select_bkg, polyOrder)
+    twoD.MakeCard(subset, '{0}_area'.format(polyOrder))
+    #apply TnP and run fit
+    with cd(working_area+"/"+'{0}_area'.format(polyOrder)):
+        print("Creating TnP wspace: {0}/Tnp.root".format(os.getcwd()))
+        TnPCmd = "text2workspace.py  -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe --PO categories=ZJets_bc_0,ZJets_bc_1,ZJets_bc_2,WJets_c card.txt  -o TnP.root"
+        fitCmd = "combine -M MultiDimFit TnP.root --algo singles --cminDefaultMinimizerStrategy=0"
+        os.system(TnPCmd)
+        print("Fit cmd: ", fitCmd)
+        os.system(fitCmd)
+
 if __name__ == '__main__':
     # Provided for convenience is this function which will package the current CMSSW and store it on the user's EOS (assumes FNAL).
     # This only needs to be run once unless you fundamentally change your working environment.
@@ -361,11 +374,10 @@ if __name__ == '__main__':
 
     #To get final uncerts. "combine -M MultiDimFit TnP.root --algo singles --cminDefaultMinimizerStrategy=0"
 
-    bestOrder = {"17_tight_split":"2"}
-    #for working_area in ["SF16APV_T_split","SF16_T_split","SF17_T_split"]:
-    for working_area in ["17_tight_split"]:
+    bestOrder = {"16APV_tight_split":"2","16_tight_split":"2","17_tight_split":"2","18_tight_split":"2"}
+    for working_area in ["16APV_tight_split","16_tight_split","17_tight_split","18_tight_split"]:
 
-        jsonConfig   = '/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/configs/BTV/{0}.json'.format(working_area)
+        jsonConfig   = '/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/configs/BTV_450/{0}.json'.format(working_area)
 
         #test_make(jsonConfig)
 
@@ -373,8 +385,10 @@ if __name__ == '__main__':
             polyOrder = order
             #test_fit()
             if polyOrder==bestOrder[working_area]:
+                test_fit()
                 test_plot()
-                test_GoF()
+                test_mdimfit()
+            #    test_GoF()
             #    test_GoF_plot()
             #    test_Impacts()
 
