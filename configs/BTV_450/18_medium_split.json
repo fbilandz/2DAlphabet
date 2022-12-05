@@ -17,7 +17,6 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
             "puUnc",
             "topxsec",
             "trig"
@@ -36,7 +35,6 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
             "puUnc",
             "trig",
             "d1K_NLO",
@@ -61,7 +59,6 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
             "puUnc",
             "trig",
             "d1K_NLO",
@@ -87,7 +84,31 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
+            "puUnc",
+            "trig",
+            "d1K_NLO",
+            "d2K_NLO",
+            "d3K_NLO",
+            "d1kappa_EW",
+            "Z_d2kappa_EW",
+            "Z_d3kappa_EW",
+            "ISR",
+            "FSR"
+         ],
+         "SCALE":1.0,
+         "COLOR":1,
+         "TYPE":"SIGNAL",
+         "TITLE":"ZJets",
+         "LOC":"path/FILE:HIST"
+      },
+      "ZJets_bc_2":{
+         "SYSTEMATICS":[
+            "lumi",
+            "pdfUnc",
+            "jes",
+            "jer",
+            "jms",
+            "jmr",
             "puUnc",
             "trig",
             "d1K_NLO",
@@ -111,7 +132,8 @@
          "PROCESSES":[
             "WJets_c",
             "ZJets_bc_0",
-            "ZJets_bc_1"
+            "ZJets_bc_1",
+            "ZJets_bc_2"
          ],
          "BINNING":"default"
       },
@@ -119,7 +141,8 @@
          "PROCESSES":[
             "WJets_c",
             "ZJets_bc_0",
-            "ZJets_bc_1"
+            "ZJets_bc_1",
+            "ZJets_bc_2"
          ],
          "BINNING":"default"
       }
@@ -130,8 +153,8 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/tight_split",
-      "FILE":"templates17.root"
+      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/medium_split",
+      "FILE":"templates18.root"
    },
    "BINNING":{
       "default":{
@@ -166,7 +189,8 @@
             "NAME":"pT",
             "TITLE":"p_{T} [GeV]",
             "BINS":[
-               400,
+               450,
+               500,
                600,
                2000
             ]
@@ -182,12 +206,6 @@
          "CODE":1,
          "VALUP":1.061,
          "VALDOWN":0.938
-      },
-      "prefiring17":{
-         "UP":"path/FILE:$process_m_pT_$region__prefireUnc_up",
-         "DOWN":"path/FILE:$process_m_pT_$region__prefireUnc_down",
-         "SIGMA":1.0
-
       },
       "pdfUnc":{
          "UP":"path/FILE:HIST_UP",
@@ -263,12 +281,12 @@
          "UP":"path/FILE:$process_m_pT_$region_jmrUp",
          "DOWN":"path/FILE:$process_m_pT_$region_jmrDown",
          "SIGMA":1.0
-   },
+      },
       "ISR":{
          "UP":"path/FILE:$process_m_pT_$region__ISRunc_up",
          "DOWN":"path/FILE:$process_m_pT_$region__ISRunc_down",
          "SIGMA":1.0
-   },
+      },
       "FSR":{
          "UP":"path/FILE:$process_m_pT_$region__FSRunc_up",
          "DOWN":"path/FILE:$process_m_pT_$region__FSRunc_down",

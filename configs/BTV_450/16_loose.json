@@ -18,7 +18,7 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
+            "prefiring16",
             "puUnc",
             "topxsec",
             "trig"
@@ -37,7 +37,7 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
+            "prefiring16",
             "puUnc",
             "trig",
             "d1K_NLO",
@@ -60,7 +60,7 @@
             "jer",
             "jms",
             "jmr",
-            "prefiring17",
+            "prefiring16",
             "puUnc",
             "trig",
             "d1K_NLO",
@@ -99,8 +99,8 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/tight",
-      "FILE":"templates17.root"
+      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/loose",
+      "FILE":"templates16.root"
    },
    "BINNING":{
       "default":{
@@ -135,7 +135,8 @@
             "NAME":"pT",
             "TITLE":"p_{T} [GeV]",
             "BINS":[
-               400,
+               450,
+               500,
                600,
                2000
             ]
@@ -145,14 +146,14 @@
    "SYSTEMATICS":{
       "lumi":{
          "CODE":0,
-         "VAL":1.023
+         "VAL":1.012
       },
       "topxsec":{
          "CODE":1,
          "VALUP":1.061,
          "VALDOWN":0.938
       },
-      "prefiring17":{
+      "prefiring16":{
          "UP":"path/FILE:$process_m_pT_$region__prefireUnc_up",
          "DOWN":"path/FILE:$process_m_pT_$region__prefireUnc_down",
          "SIGMA":1.0

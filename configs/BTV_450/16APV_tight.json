@@ -99,7 +99,7 @@
       "HIST_DOWN":"$process_m_pT_$region__$syst_down",
       "HIST_ALT_UP":"$process_m_pT_$region_$systUp",
       "HIST_ALT_DOWN":"$process_m_pT_$region_$systDown",
-      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/medium",
+      "path":"/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/templates/tight",
       "FILE":"templates16APV.root"
    },
    "BINNING":{
@@ -135,7 +135,8 @@
             "NAME":"pT",
             "TITLE":"p_{T} [GeV]",
             "BINS":[
-               400,
+               450,
+               500,
                600,
                2000
             ]
