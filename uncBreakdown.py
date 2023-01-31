@@ -27,15 +27,16 @@ def runNuisBreakdown(POI):
     if(os.path.isfile("higgsCombine{0}_20.total.MultiDimFit.mH120.root".format(POI))):
         print("higgsCombine{0}_20.total.MultiDimFit.mH120.root".format(POI))
         print("Skipping the calculation of nuisance breakdown")
-        return
+        #return
 
 
     #First fit
-    firstFitCmd = "combine TnP.root -M MultiDimFit --algo=singles --saveWorkspace -n zbb.postfit"
+    firstFitCmd = "combine TnP.root -M MultiDimFit --algo=singles --saveWorkspace -n zbb.postfit --cminDefaultMinimizerStrategy=0"
+    #firstFitCmd = "combine TnP.root -M MultiDimFit --algo=singles --saveWorkspace -n zbb.postfit --cminDefaultMinimizerStrategy=0 --cminDefaultMinimizerTolerance=0.5"
     print(firstFitCmd)
     os.system(firstFitCmd)
     #Scan select POI
-    scanCmd     = "combine higgsCombinezbb.postfit.MultiDimFit.mH120.root -M MultiDimFit -n {0}_0.total --algo singles --snapshotName MultiDimFit --setParameterRanges {0}=0,2 -P {0} --floatOtherPOIs=1".format(POI)
+    scanCmd     = "combine higgsCombinezbb.postfit.MultiDimFit.mH120.root -M MultiDimFit -n {0}_0.total --algo singles --snapshotName MultiDimFit --setParameterRanges {0}=0,2 -P {0} --floatOtherPOIs=1 --cminDefaultMinimizerStrategy=0".format(POI)
     print(scanCmd)
     os.system(scanCmd)
     freezeParams= ""
@@ -44,7 +45,7 @@ def runNuisBreakdown(POI):
             freezeParams = nuis
         else:
             freezeParams = "{0},{1}".format(freezeParams,nuis)
-        scanCmd = "combine higgsCombinezbb.postfit.MultiDimFit.mH120.root -M MultiDimFit -n {0}_{1}.total --algo singles --snapshotName MultiDimFit --setParameterRanges {0}=0,2 -P {0} --floatOtherPOIs=1 --freezeParameters={2}".format(POI,i+1,freezeParams)
+        scanCmd = "combine higgsCombinezbb.postfit.MultiDimFit.mH120.root -M MultiDimFit -n {0}_{1}.total --algo singles --snapshotName MultiDimFit --setParameterRanges {0}=0,2 -P {0} --floatOtherPOIs=1 --freezeParameters={2} --cminDefaultMinimizerStrategy=0".format(POI,i+1,freezeParams)
         print(scanCmd)
         os.system(scanCmd)
 
@@ -92,19 +93,32 @@ def formatResult(SF,uncsUp,uncsDn,title):
         oFile.write(lines)  
 
 
-years = ["16APV","16","17","18"]
-wps   = ["loose","medium","tight"]
+#years = ["16APV","16","17","18"]
+years  = ["17","18"]
+#wps   = ["loose","medium","tight"]
+#wps   = ["loose","medium"]
+wps   = ["medium"]
 POIs  = ["SF_ZJets_bc_0","SF_ZJets_bc_1","SF_ZJets_bc_2"]
 bestOrders = { 
     "loose" :{"16APV_loose_split":"2" ,"16_loose_split":"2" ,"17_loose_split":"4" ,"18_loose_split":"4"},
     "medium":{"16APV_medium_split":"2","16_medium_split":"2","17_medium_split":"3","18_medium_split":"2"},
     "tight" :{"16APV_tight_split":"2" ,"16_tight_split":"2" ,"17_tight_split":"2" ,"18_tight_split":"2"}
-}
+} #Pnet
+
+# bestOrders = { 
+#     "medium":{"16APV_medium_split":"2","16_medium_split":"3","17_medium_split":"3","18_medium_split":"4"},
+#     "tight" :{"16APV_tight_split":"2" ,"16_tight_split":"2" ,"17_tight_split":"2" ,"18_tight_split":"4"}
+# } #DeepDoubleX
+
+#bestOrders = { 
+#    "tight" :{"16APV_tight_split":"3" ,"16_tight_split":"3" ,"17_tight_split":"3" ,"18_tight_split":"3"}
+#} #Hbb
+
 
 for year in years:
     for wp in wps:
         bestOrder   = bestOrders[wp]["{0}_{1}_split".format(year,wp)]
-        workingArea = "{0}_{1}_split/{2}_area/".format(year,wp,bestOrder)
+        workingArea = "ParticleNet/{0}_{1}_split/{2}_area/".format(year,wp,bestOrder)
         with cd(workingArea):
             for POI in POIs:
                 title       = "{0}_{1}_{2}".format(year,wp,POI)

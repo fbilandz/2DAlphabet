@@ -375,27 +375,28 @@ if __name__ == '__main__':
 
     #To get final uncerts. "combine -M MultiDimFit TnP.root --algo singles --cminDefaultMinimizerStrategy=0"
 
-    bestOrder = {"16APV_medium_split":"2","16_medium_split":"2","17_medium_split":"3","18_medium_split":"2"}
-    #for working_area in ["16APV_medium_split","16_medium_split","17_medium_split","18_medium_split"]:
-    for working_area in ["17_medium_split","18_medium_split"]:
+    #bestOrder = {"16APV_medium_split":"2","16_medium_split":"2","17_medium_split":"3","18_medium_split":"2"} #PNet
+    #bestOrder = {"16APV_medium_split":"2","16_medium_split":"3","17_medium_split":"3","18_medium_split":"4"} #DeepDoubleX
+    bestOrder = {"16APV_medium_split":"2","16_medium_split":"3","17_medium_split":"3","18_medium_split":"4"}  #Hbb
+    for working_area in ["16APV_medium_split","16_medium_split","17_medium_split","18_medium_split"]:
 
         jsonConfig   = '/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/configs/BTV_450/{0}.json'.format(working_area)
 
-        #test_make(jsonConfig)
+        test_make(jsonConfig)
 
         for order in ["1","2","3","4"]:
             polyOrder = order
-            #test_fit()
-            if polyOrder==bestOrder[working_area]:
+            test_fit()
+            #if polyOrder==bestOrder[working_area]:
             #    test_fit()
-                test_plot()
-                test_mdimfit()
-            #    test_GoF()
+                # test_plot()
+                # test_mdimfit()
+                # test_GoF()
             #    test_GoF_plot()
             #    test_Impacts()
 
 
 
-        # test_FTest("1","2")
-        # test_FTest("2","3")
-        # test_FTest("3","4")
+        test_FTest("1","2")
+        test_FTest("2","3")
+        test_FTest("3","4")
