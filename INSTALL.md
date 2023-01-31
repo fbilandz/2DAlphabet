@@ -4,7 +4,7 @@ cmsrel CMSSW_10_6_14
 cd CMSSW_10_6_14/src
 cmsenv
 git clone git@github.com:mroguljic/2DAlphabet.git
-git clone https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
+git clone --branch 102x https://github.com/cms-analysis/HiggsAnalysis-CombinedLimit.git HiggsAnalysis/CombinedLimit
 curl -s https://raw.githubusercontent.com/lcorcodilos/CombineHarvester/master/CombineTools/scripts/sparse-checkout-ssh.sh | bash
 scram b clean; scram b -j 10
 cmsenv
