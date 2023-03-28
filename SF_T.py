@@ -364,26 +364,26 @@ def test_sf(working_area,polyOrder):
 if __name__ == '__main__':
     # Provided for convenience is this function which will package the current CMSSW and store it on the user's EOS (assumes FNAL).
     # This only needs to be run once unless you fundamentally change your working environment.
-    #make_env_tarball()
+    make_env_tarball()
 
 
-    bestOrder = {"16APV_tight":"2","16_tight":"3","17_tight":"2","18_tight":"2"}
-    for working_area in ["16APV_tight","16_tight","17_tight","18_tight"]:
+    bestOrder = {"17_hhh_loose":"2"}
+    for working_area in ["17_hhh_loose"]:
     #for working_area in ["16_tight"]:
 
-        jsonConfig   = '/users/mrogul/Work/Zbb_SF_py3/Zbb_SF/StatAna/CMSSW_10_6_14/src/2DAlphabet/configs/BTV/{0}.json'.format(working_area)
+        jsonConfig   = '/users/fbilandzija/CMSSW_10_6_14/src/2DAlphabet/configs/BTV_450/{0}.json'.format(working_area)
 
-        #test_make(jsonConfig)
+        test_make(jsonConfig)
 
-        for order in ["1","2","3","4"]:
-            polyOrder = order
-            #test_fit()
-            if polyOrder==bestOrder[working_area]:
-               #test_plot()
-               #test_GoF()
-               #test_GoF_plot()
-               test_sf(working_area,polyOrder)
-               #test_Impacts()
+        # for order in ["1","2","3","4"]:
+        #     polyOrder = order
+        #     #test_fit()
+        #     if polyOrder==bestOrder[working_area]:
+        #        #test_plot()
+        #        #test_GoF()
+        #        #test_GoF_plot()
+        #        test_sf(working_area,polyOrder)
+        #        #test_Impacts()
 
 
         # test_FTest("1","2")
