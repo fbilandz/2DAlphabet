@@ -86,34 +86,34 @@ def _generate_constraints(nparams):
 # we are working in a 2D space, so linear in X, linear in Y just change the shape of the transfer function
 _rpf_options = {
     '0': {
-        'form': '0.005*(@0)',
+        'form': '0.01*(@0)',
         'constraints': _generate_constraints(1)
     },
     '1': {
-        'form': '0.002*(@0+@1*x+@2*y)',
+        'form': '0.01*(@0+@1*x+@2*y)',
         'constraints': _generate_constraints(3)
     },
 
     '2': {
-        'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2)',
+        'form': '0.01*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2)',
         'constraints': _generate_constraints(6)
     },
     '3': {
-        'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3)',
+        'form': '0.01*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3)',
         'constraints': _generate_constraints(9)
-    },
-    '4': {
-        'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4)',
-        'constraints': _generate_constraints(12)
-    },
-    '5': {
-        'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4+@12*x**5+@13*y*x**4+@14*y*y*x**3)',
-        'constraints': _generate_constraints(15)
-    },
-    '6': {
-        'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4+@12*x**5+@13*y*x**4+@14*y*y*x**3+@15*x**6+@16*x**5*y+@17*x**4*y*y)',
-        'constraints': _generate_constraints(18)
     }
+    # '4': {
+    #     'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4)',
+    #     'constraints': _generate_constraints(12)
+    # },
+    # '5': {
+    #     'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4+@12*x**5+@13*y*x**4+@14*y*y*x**3)',
+    #     'constraints': _generate_constraints(15)
+    # },
+    # '6': {
+    #     'form': '0.002*(@0+@1*x+@2*y+@3*x*y+@4*x**2+@5*y**2+@6*x*x*y+@7*x*y*y+@8*x**3+@9*x**3*y+@10*x*x*y*y+@11*x**4+@12*x**5+@13*y*x**4+@14*y*y*x**3+@15*x**6+@16*x**5*y+@17*x**4*y*y)',
+    #     'constraints': _generate_constraints(18)
+    # }
 }
 
 '''---------------Primary functions---------------------------'''
@@ -156,7 +156,7 @@ def test_make(jsonConfig):
     # We specify the name of the process, the region it lives in, and the object itself.
     # The process is assumed to be a background and colored yellow but this can be changed
     # with optional arguments.
-    twoD.AddAlphaObj('qcd',"fail",qcd_f)
+    twoD.AddAlphaObj('qcd',"fail",qcd_f, title="Background")
 
     # As a global variables, we've defined some different transfer function (TF) options.
     # We only want to include one of these at the time of fitting but we want to construct
@@ -194,7 +194,7 @@ def test_make(jsonConfig):
         # but we give them different titles so that they look pretty in
         # the final plot legends.
         #twoD.AddAlphaObj('qcd_'+opt_name,"L",qcd_l,title='qcd')
-        twoD.AddAlphaObj('qcd_'+opt_name,"pass",qcd_t,title='qcd')
+        twoD.AddAlphaObj('qcd_'+opt_name,"pass",qcd_t,title='Background')
 
     # Save() will save the RooWorkspace and the ledgers and other associated pieces
     # so the twoD object can be reconstructed later. If this line doesn't run or
@@ -206,15 +206,15 @@ def test_fit():
     subset = twoD.ledger.select(_select_bkg, polyOrder)
     twoD.MakeCard(subset, '{0}_area'.format(polyOrder))
     #apply TnP and run fit
-    with cd(working_area+"/"+'{0}_area'.format(polyOrder)):
-        print("Creating TnP wspace: {0}/Tnp.root".format(os.getcwd()))
-        TnPCmd = "text2workspace.py  -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe --PO categories=ZJets_bc,WJets_c card.txt  -o TnP.root"
-        fitCmd = "combine -M FitDiagnostics TnP.root --cminDefaultMinimizerStrategy 0 --robustHesse 1 --saveWorkspace"
-        os.system(TnPCmd)
-        print("Fit cmd: ", fitCmd)
-        os.system(fitCmd)
+    # with cd(working_area+"/"+'{0}_area'.format(polyOrder)):
+    #     # print("Creating TnP wspace: {0}/Tnp.root".format(os.getcwd()))
+    #     # TnPCmd = "text2workspace.py  -m 125 -P HiggsAnalysis.CombinedLimit.TagAndProbeExtended:tagAndProbe --PO categories=ZJets_bc,WJets_c card.txt  -o TnP.root"
+    #     fitCmd = "combine -M FitDiagnostics TnP.root --cminDefaultMinimizerStrategy 0 --robustHesse 1 --saveWorkspace"
+    #     # os.system(TnPCmd)
+    #     print("Fit cmd: ", fitCmd)
+    #     os.system(fitCmd)
 
-    #twoD.MLfit('{0}_area'.format(polyOrder),verbosity=0)
+    twoD.MLfit('{0}_area'.format(polyOrder),verbosity=0)
 
 def test_plot():
     '''Load the twoD object again and run standard plots for a specific subtag.
@@ -364,22 +364,22 @@ def test_sf(working_area,polyOrder):
 if __name__ == '__main__':
     # Provided for convenience is this function which will package the current CMSSW and store it on the user's EOS (assumes FNAL).
     # This only needs to be run once unless you fundamentally change your working environment.
-    make_env_tarball()
+    # make_env_tarball()
 
 
     bestOrder = {"17_hhh_loose":"2"}
     for working_area in ["17_hhh_loose"]:
     #for working_area in ["16_tight"]:
 
-        jsonConfig   = '/users/fbilandzija/CMSSW_10_6_14/src/2DAlphabet/configs/BTV_450/{0}.json'.format(working_area)
+        jsonConfig   = '/users/fbilandzija/CMSSW_10_6_14/src/2DAlphabet/configs/HHH/{0}.json'.format(working_area)
 
         test_make(jsonConfig)
 
-        # for order in ["1","2","3","4"]:
-        #     polyOrder = order
-        #     #test_fit()
+        for order in ["1"]:
+            polyOrder = order
+            test_fit()
         #     if polyOrder==bestOrder[working_area]:
-        #        #test_plot()
+            test_plot()
         #        #test_GoF()
         #        #test_GoF_plot()
         #        test_sf(working_area,polyOrder)
