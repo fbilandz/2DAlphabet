@@ -3,6 +3,5 @@ executable 	= TEMPSCRIPT
 Output 		= notneeded/output_$(Cluster)_$(Process).stdout
 Error 		= notneeded/output_$(Cluster)_$(Process).stderr
 Log 		= notneeded/output_$(Cluster)_$(Process).log
-use_x509userproxy = true
 Arguments 	= "$(args)"
 Queue args from TEMPARGS

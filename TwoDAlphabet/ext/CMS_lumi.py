@@ -10,7 +10,7 @@ cmsText     = "CMS";
 cmsTextFont   = 61  
 
 writeExtraText = True
-extraText   = "Preliminary"
+extraText   = "WiP"
 extraTextFont = 52 
 
 lumiTextSize     = 0.6
@@ -25,7 +25,7 @@ relExtraDY = 1.2
 
 extraOverCmsTextSize  = 0.76
 
-lumi_13TeV = "137 fb^{-1}"
+lumi_13TeV = "138 fb^{-1}"
 lumi_2016_13TeV = "35.9 fb^{-1}"
 lumi_2017_13TeV = "41.5 fb^{-1}"
 lumi_2018_13TeV = "60 fb^{-1}"
@@ -35,7 +35,7 @@ lumi_sqrtS = ""
 
 drawLogo      = False
 
-def CMS_lumi(pad,  iPeriod=4,  iPosX=11, sim=False ):
+def CMS_lumi(pad,  iPeriod=1,  iPosX=11, sim=False ):
     outOfFrame    = False
     if(iPosX/10==0 ): outOfFrame = True
 
@@ -116,7 +116,7 @@ def CMS_lumi(pad,  iPeriod=4,  iPosX=11, sim=False ):
     latex.SetTextAlign(31) 
     latex.SetTextSize(lumiTextSize*t)    
 
-    latex.DrawLatex(1-r,1-t+cmsTextOffset*t,lumiText)
+    latex.DrawLatex(1-r,1-t+cmsTextOffset*t-0.06,lumiText)
 
     if( outOfFrame ):
         latex.SetTextFont(cmsTextFont)
@@ -160,13 +160,15 @@ def CMS_lumi(pad,  iPeriod=4,  iPosX=11, sim=False ):
                 latex.SetTextFont(extraTextFont)
                 latex.SetTextAlign(align_)
                 latex.SetTextSize(extraTextSize*t)
-                if not sim: latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText)
+                print("writeExtraText", cmsTextSize,t, posX_, posY_)
+                if not sim: latex.DrawLatex(posX_ + 0.11, posY_ - 0.01, extraText)
                 else: latex.DrawLatex(posX_, posY_- relExtraDY*cmsTextSize*t, extraText + ' simulation')
     elif( writeExtraText ):
         if( iPosX==0):
-            posX_ =   l +  relPosX*(1-l-r)
-            posY_ =   1-t+lumiTextOffset*t
-
+            posX_ =  r
+            # posY_ =   1-t+lumiTextOffset*t
+        posY_ = t
+        
         latex.SetTextFont(extraTextFont)
         latex.SetTextSize(extraTextSize*t)
         latex.SetTextAlign(align_)

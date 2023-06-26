@@ -32,7 +32,7 @@ class Plotter(object):
         self.fittag = fittag
         self.twoD = twoD
         self.ledger = ledger
-        self.yaxis1D_title = 'Events / bin'
+        self.yaxis1D_title = r'Events/Bin Width[GeV^{-1}]'
         self.df = pandas.DataFrame(columns=['process','region','process_type','title'])
         self.dir = 'plots_fit_{f}'.format(f=self.fittag)
         self.slices = {'x': {}, 'y': {}}
@@ -298,7 +298,7 @@ class Plotter(object):
                         make_pad_1D(out_pad_name, data=this_data, bkgs=these_bkgs, signals=these_signals,
                                     subtitle=slice_str, totalBkg=this_totalbkg,
                                     logyFlag=logyFlag, year=self.twoD.options.year,
-                                    extraText='', savePDF=True, savePNG=True, ROOTout=False)
+                                    extraText='WiP', savePDF=True, savePNG=True, ROOTout=False)
                         pads = pads.append({'pad':out_pad_name+'.png', 'region':region, 'proj':projn, 'logy':logyFlag}, ignore_index=True)
 
         for logy in ['','_logy']:
@@ -474,7 +474,7 @@ def _make_pad_gen(name):
     return pad
 
 def make_pad_2D(outname, hist, style='lego', logzFlag=False, ROOTout=None,
-                savePDF=False, savePNG=False, year=1, extraText='Preliminary'):
+                savePDF=False, savePNG=False, year=1, extraText='Work in Progress'):
     '''Make a pad holding a 2D plot with standardized formatting conventions.
 
     Args:
@@ -518,7 +518,7 @@ def make_pad_2D(outname, hist, style='lego', logzFlag=False, ROOTout=None,
 
 def make_pad_1D(outname, data, bkgs=[], signals=[], title='', subtitle='',
             totalBkg=None, logyFlag=False, ROOTout=None, savePDF=False, savePNG=False,
-            dataOff=False, datastyle='pe X0', year=1, addSignals=True, extraText='Preliminary'):
+            dataOff=False, datastyle='pe X0', year=1, addSignals=True, extraText='Work in Progress'):
     '''Make a pad holding a 1D plot with standardized formatting conventions.
 
     Args:
@@ -551,7 +551,18 @@ def make_pad_1D(outname, data, bkgs=[], signals=[], title='', subtitle='',
         lumiE.SetTextFont(42)
         lumiE.SetTextAlign(31) 
         lumiE.SetTextSize(0.7*0.1)
-        lumiE.DrawLatex(1-0.05,1-0.1+0.2*0.1,"137 fb^{-1} (13 TeV)")
+        lumiE.DrawLatex(1-0.05,1-0.1+0.2*0.1,"138 fb^{-1} (13 TeV)")
+        
+    def scale_to_bin_width(hist):
+        h_res = hist.Clone()
+        h_res.Reset()
+        for i in range(1,hist.GetNbinsX()+1):
+            width = hist.GetBinWidth(i)
+            value = hist.GetBinContent(i)/width
+            err = hist.GetBinError(i)/width
+            h_res.SetBinContent(i, value)
+            h_res.SetBinError(i, err)
+        return h_res
 
     pad = _make_pad_gen(outname)
 
@@ -562,6 +573,13 @@ def make_pad_1D(outname, data, bkgs=[], signals=[], title='', subtitle='',
         data.SetMarkerStyle(8)
     if 'hist' in datastyle.lower():
         data.SetFillColorAlpha(0,0)
+
+    data = scale_to_bin_width(data)
+    totalBkg = scale_to_bin_width(totalBkg)
+    for i in range(len(bkgs)):
+        bkgs[i] = scale_to_bin_width(bkgs[i])
+    for i in range(len(signals)):
+        signals[i] = scale_to_bin_width(signals[i])
 
     data.SetTitleOffset(1.15,"xy")
     data.GetYaxis().SetTitleOffset(1.04)
@@ -676,9 +694,10 @@ def make_pad_1D(outname, data, bkgs=[], signals=[], title='', subtitle='',
         
         CMS_lumi.extraText = extraText
         CMS_lumi.cmsTextSize = 0.9
-        CMS_lumi.cmsTextOffset = 2
-        CMS_lumi.lumiTextSize = 0.9
-        CMS_lumi.CMS_lumi(main_pad, year, 11)
+        CMS_lumi.cmsTextOffset = 1
+        CMS_lumi.lumiTextSize = 0.75
+        CMS_lumi.CMS_lumi(main_pad, 1, 11)
+        # _draw_extralumi_tex()
         
         subtitle_tex = ROOT.TLatex()
         subtitle_tex.SetNDC()

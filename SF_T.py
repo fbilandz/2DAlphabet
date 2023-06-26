@@ -67,6 +67,12 @@ def _load_CR_rpf(poly_order):
     params_to_set = twoD_CRonly.GetParamsOnMatch('rpf.*'+poly_order, 'MX_2000_MY_800_area', 'b')
     return {k:v['val'] for k,v in params_to_set.items()}
 
+
+def _load_fit_rpf(working_area,orderSR,json_file):
+    twoD_blindFit = TwoDAlphabet(working_area,json_file, loadPrevious=True)
+    params_to_set = twoD_blindFit.GetParamsOnMatch('rpf.*', '{0}_area'.format(orderSR), 'b')
+    return {k:v['val'] for k,v in params_to_set.items()}
+
 def _load_CR_rpf_as_SR(poly_order):
     params_to_set = {}
     for k,v in _load_CR_rpf(poly_order).items():
@@ -117,7 +123,7 @@ _rpf_options = {
 }
 
 '''---------------Primary functions---------------------------'''
-def test_make(jsonConfig):
+def test_make(jsonConfig,findreplace={}):
     '''Constructs the workspace for either the CR or SR (a different function
     could build them simultanesouly but in this example, we don't care to fit
     the two simultanesouly so separate treatment is fine).
@@ -129,7 +135,7 @@ def test_make(jsonConfig):
     # is also saved as runConfig.json. This means, if you want to share your analysis with
     # someone, they can grab everything they need from this one spot - no need to have access to
     # the original files! (Note though that you'd have to change the config to point to organized_hists.root).
-    twoD = TwoDAlphabet(working_area, jsonConfig, loadPrevious=False)
+    twoD = TwoDAlphabet(working_area, jsonConfig, loadPrevious=False,findreplace=findreplace)
     qcd_hists = twoD.InitQCDHists() # Create the data - BKGs histograms
 
 
@@ -200,6 +206,7 @@ def test_make(jsonConfig):
     # so the twoD object can be reconstructed later. If this line doesn't run or
     # if something in the above needs to change, everything will need to be re-run to this point.
     twoD.Save()
+    
 
 def test_fit():
     twoD = TwoDAlphabet(working_area, '%s/runConfig.json'%working_area, loadPrevious=True)
@@ -215,6 +222,30 @@ def test_fit():
     #     os.system(fitCmd)
 
     twoD.MLfit('{0}_area'.format(polyOrder),verbosity=0)
+
+def test_limit(working_area,orderSR,json_file,blind=True):
+    '''Perform a blinded limit. To be blinded, the Combine algorithm (via option `--run blind`)
+    will create an Asimov toy dataset from the pre-fit model. Since the TF parameters are meaningless
+    in our true "pre-fit", we need to load in the parameter values from a different fit so we have
+    something reasonable to create the Asimov toy. 
+    '''
+    # Returns a dictionary of the TF parameters with the names as keys and the post-fit values as dict values.
+    params_to_set = _load_fit_rpf(working_area,orderSR,json_file)
+    print(params_to_set)
+    twoD = TwoDAlphabet(working_area, json_file, loadPrevious=True)
+
+    # Make a subset and card as in test_fit()
+    #subset = twoD.ledger.select(_select_bkg,poly_order)
+    #twoD.MakeCard(subset, poly_order+'_area')
+    # Run the blinded limit with our dictionary of TF parameters
+    twoD.Limit(
+        subtag='{0}_area'.format(orderSR),
+        blindData=blind,
+        verbosity=1,
+        setParams=params_to_set,
+        condor=False
+    )
+
 
 def test_plot():
     '''Load the twoD object again and run standard plots for a specific subtag.
@@ -239,7 +270,7 @@ def test_GoF():
     # up when making the card.
     twoD.GoodnessOfFit(
         '{0}_area'.format(polyOrder), ntoys=500, freezeSignal=False,
-        condor=True, njobs=10, card_or_w='TnP.root',lorienTag=True
+        condor=True, njobs=10, lorienTag=True
     )
 
     # Note that no plotting is done here since one needs to wait for the condor jobs to finish first.
@@ -274,14 +305,14 @@ def test_FTest(poly1,poly2):
     params1 = twoD.ledger.select(_select_bkg, poly1).alphaParams
     rpfSet1 = params1[params1["name"].str.contains("rpf")]
     nRpfs1  = len(rpfSet1.index)
-    _gof_for_FTest(twoD, "{0}_area".format(poly1), card_or_w='TnP.root')
+    _gof_for_FTest(twoD, "{0}_area".format(poly1))
     gofFile1= working_area+"/{0}_area/higgsCombine_gof_data.GoodnessOfFit.mH120.root".format(poly1)
 
     #Get number of RPF params and run GoF for poly2
     params2 = twoD.ledger.select(_select_bkg, poly2).alphaParams
     rpfSet2 = params2[params2["name"].str.contains("rpf")]
     nRpfs2  = len(rpfSet2.index)
-    _gof_for_FTest(twoD, "{0}_area".format(poly2), card_or_w='TnP.root')
+    _gof_for_FTest(twoD, "{0}_area".format(poly2))
     gofFile2= working_area+"/{0}_area/higgsCombine_gof_data.GoodnessOfFit.mH120.root".format(poly2)
 
     base_fstat = FstatCalc(gofFile1,gofFile2,nRpfs1,nRpfs2,nBins)
@@ -311,10 +342,10 @@ def test_FTest(poly1,poly2):
         c.SetTopMargin(0.1)
         ftestHist_nbins = 30
         ftestHist = TH1F("Fhist","",ftestHist_nbins,0,max(10,1.3*base_fstat[0]))
-        ftestHist.GetXaxis().SetTitle("F = #frac{-2log(#lambda_{1}/#lambda_{2})/(p_{2}-p_{1})}{-2log#lambda_{2}/(n-p_{2})}")
-        ftestHist.GetXaxis().SetTitleSize(0.025)
-        ftestHist.GetXaxis().SetTitleOffset(2)
-        ftestHist.GetYaxis().SetTitleOffset(0.85)
+        ftestHist.GetXaxis().SetTitle("F")
+        ftestHist.GetXaxis().SetTitleSize(0.06)
+        ftestHist.GetXaxis().SetTitleOffset(0.7)
+        ftestHist.GetYaxis().SetTitleOffset(0.5)
         
         ftestHist.Draw("pez")
         ftestobs  = TArrow(base_fstat[0],0.25,base_fstat[0],0)
@@ -346,7 +377,7 @@ def test_FTest(poly1,poly2):
         latex.DrawLatex(0.12,0.91,"CMS")
         latex.SetTextSize(0.05)
         latex.SetTextFont(52)
-        latex.DrawLatex(0.65,0.91,"Preliminary")
+        latex.DrawLatex(0.65,0.91,"Work in Progress")
         latex.SetTextFont(42)
         latex.SetTextFont(52)
         latex.SetTextSize(0.045)
@@ -367,25 +398,27 @@ if __name__ == '__main__':
     # make_env_tarball()
 
 
-    bestOrder = {"17_hhh_loose":"2"}
-    for working_area in ["17_hhh_loose"]:
+    bestOrder = {"17_hhh_pass":"2"}
+    for working_area in ["Run2_hhh_pass"]:
     #for working_area in ["16_tight"]:
 
         jsonConfig   = '/users/fbilandzija/CMSSW_10_6_14/src/2DAlphabet/configs/HHH/{0}.json'.format(working_area)
 
-        test_make(jsonConfig)
+        # test_make(jsonConfig)
 
         for order in ["1"]:
             polyOrder = order
             test_fit()
-        #     if polyOrder==bestOrder[working_area]:
+            # # # if polyOrder==bestOrder[working_area]:
             test_plot()
-        #        #test_GoF()
-        #        #test_GoF_plot()
-        #        test_sf(working_area,polyOrder)
+            # test_limit(working_area, order, jsonConfig)
+            # test_GoF()
+            # test_GoF_plot()
+            # test_sf(working_area,polyOrder)
         #        #test_Impacts()
 
 
+        # test_FTest("0","1")
         # test_FTest("1","2")
         # test_FTest("2","3")
         # test_FTest("3","4")

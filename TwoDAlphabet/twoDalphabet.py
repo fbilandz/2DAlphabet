@@ -331,8 +331,8 @@ class TwoDAlphabet:
                 threshold=0 # change this to reduce the size of the correlation matrix to only those variables with correlations above a threshold
             )
             plot.gen_post_fit_shapes()
-            #plot.gen_projections(ledger, self, 'b')
-            #plot.gen_projections(ledger, self, 's')
+            plot.gen_projections(ledger, self, 'b')
+            plot.gen_projections(ledger, self, 's')
             
     def GetParamsOnMatch(self, regex='', subtag='', b_or_s='b'):
         out = {}
